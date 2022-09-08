@@ -4,6 +4,10 @@ import Databases.PropertiesHelper;
 
 import java.sql.*;
 
+/**
+ * A DatabaseSingletonHelper class will produce single DB connection,
+ * and it will make sure that only single connection gets created.
+ */
 public class DatabaseSingletonHelper {
 
     private static DatabaseSingletonHelper instance = new DatabaseSingletonHelper();

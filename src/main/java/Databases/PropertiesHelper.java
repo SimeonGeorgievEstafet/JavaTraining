@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * This Class
+ * This Class will produce ready to use date from properties file.
  */
 public class PropertiesHelper {
 

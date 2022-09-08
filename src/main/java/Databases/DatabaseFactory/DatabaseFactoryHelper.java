@@ -4,6 +4,10 @@ import Databases.PropertiesHelper;
 
 import java.sql.*;
 
+/**
+ * A DatabaseFactoryHelper class will produce
+ * ready to use DB connection.
+ */
 public class DatabaseFactoryHelper {
 
     public static Connection createConnection() {
