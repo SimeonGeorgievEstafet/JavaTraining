@@ -4,7 +4,8 @@ import java.sql.*;
 
 public class TestFactoryMethod {
 
-    // Testing the Factory pattern connections
+    // This is a Test class only for testing DatabaseFactoryHelper implementation.
+    // it will connect to DB and will print all records from customers table.
     public static void main(String[] args) {
 
         String QUERY = "SELECT * FROM customers";
