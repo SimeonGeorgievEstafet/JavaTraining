@@ -1,4 +1,4 @@
-package Databases.DatabaseSingleton;
+package Databases;
 
 import POJO.Customer;
 
