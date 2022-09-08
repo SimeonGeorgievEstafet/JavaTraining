@@ -11,23 +11,14 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Entity
+@NoArgsConstructor
 
-//                        @FieldResult(name = "name", column = "name"),
-//                        @FieldResult(name = "email", column = "email"),
-//                        @FieldResult(name = "phone", column = "phone"),
-//                        @FieldResult(name = "age", column = "age"),
-//                        @FieldResult(name = "gdpr", column = "gdpr"),
-//                        @FieldResult(name = "customer_profile_status", column = "customer_profile_status"),
-//                        @FieldResult(name = "reason", column = "reason"),
-//                        @FieldResult(name = "notes", column = "notes"),
-//                        @FieldResult(name = "deactivation_date", column = "deactivation_date"),
-//                        @FieldResult(name = "activation_date", column = "activation_date")
-@SqlResultSetMapping(name="CustomersMapping", classes = {
-        @ConstructorResult(targetClass = Customer.class,
-                columns = {@ColumnResult(name="customerId")})
-})
 public class Customer implements Serializable {
+
+    @Id
+    @Column(name = "customerId", nullable = false)
     String customerId;
+
     Date deactivation_date;
     Date activation_date;
 
@@ -41,6 +32,4 @@ public class Customer implements Serializable {
     String reason;
     String notes;
 
-    public Customer() {
-    }
 }
