@@ -77,7 +77,7 @@ public interface SQLQueries {
             "\tcustomer_id = ?";
 
 
-    String GET_CUSTOMER_BY_IDs = "select\n" +
+    String GET_CUSTOMER_BY_IDS = "select\n" +
             "\t*\n" +
             "from\n" +
             "\tcustomers_1\n" +
