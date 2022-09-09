@@ -1,4 +1,4 @@
-package POJO;
+package CustomerTests;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -27,4 +27,10 @@ public interface CustomerDao {
     Customer getByID(int i);
 
     List<Customer> getByIDs(List<Integer>ids);
+
+    List<Customer> getByIdResultSetMapper(List<Integer> ids);
+
+    Customer getByIdResultSetMapper(int id);
+
+    Customer getByIdReflection(int id);
 }

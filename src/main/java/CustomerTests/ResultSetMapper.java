@@ -1,4 +1,4 @@
-package POJO;
+package CustomerTests;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,11 +17,11 @@ public class ResultSetMapper<T> {
     public List<T> mapResultSetToObject(ResultSet rs, Class outputClass) {
         List<T> outputList = null;
         try {
-            // make sure resultset is not null
+            // make sure ResultSet is not null
             if (rs != null) {
                 // check if outputClass has 'Entity' annotation
                 if (outputClass.isAnnotationPresent(Entity.class)) {
-                    // get the resultset metadata
+                    // get the ResultSet metadata
                     ResultSetMetaData rsmd = rs.getMetaData();
                     // get all the attributes of outputClass
                     Field[] fields = outputClass.getDeclaredFields();

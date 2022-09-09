@@ -1,4 +1,4 @@
-package POJO;
+package CustomerTests;
 
 public interface SQLQueries {
 

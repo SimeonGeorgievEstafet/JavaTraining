@@ -1,10 +1,6 @@
-package POJO;
+package CustomerTests;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public class TestCustomers {
+public class CustomerTest {
     public static void main(String[] args) {
         final String ACTIVATE = "activate";
         final String DEACTIVATE = "deactivate";
@@ -41,10 +37,20 @@ public class TestCustomers {
 //        Get total count of customers
         CDI.getRecordsCount();
 
-        //To be implemented in next story
-
+//        Get customer by id with manual mapping of the fields
         CDI.getByID(CDI.getRandomId());
 
-        CDI.getByIDs(CDI.getRandomIds(10));
+//        Get many customers by list of ids with manual mapping of the fields
+        CDI.getByIDs(CDI.getRandomIds(5));
+
+//        Get customer by id with ResultSetMapper
+        CDI.getByIdResultSetMapper(CDI.getRandomIds(3));
+
+//        Get many customers by list of ids with ResultSetMapper
+        CDI.getByIdResultSetMapper(CDI.getRandomId());
+
+//        Get customer by id with Reflection
+        CDI.getByIdReflection(CDI.getRandomId());
+
     }
 }
