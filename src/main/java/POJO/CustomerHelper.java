@@ -2,9 +2,12 @@ package POJO;
 
 import Databases.DatabaseSingleton.DatabaseSingletonHelper;
 import com.github.javafaker.Faker;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class CustomerHelper implements CustomerDao {
@@ -131,77 +134,73 @@ public class CustomerHelper implements CustomerDao {
         return CustomerId;
     }
 
-    //To be implemented in next story
-    //    public Customer getByID(int id) {
-//        ResultSet rs = customersDbConnection.getCustomerById(id);
-//        Customer customer = null;
-//
-//        ResultSetMetaData rsmd = null;
-//        try {
-//            rsmd = rs.getMetaData();
-//
-//            int columnsNumber = rsmd.getColumnCount();
-//            while (rs.next()) {
-//                for (int i = 1; i <= columnsNumber; i++) {
-//                    if (i > 1) System.out.print(",  ");
-//                    String columnValue = rs.getString(i);
-//                    System.out.print(columnValue + " " + rsmd.getColumnName(i));
-//                }
-//                System.out.println("");
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//        try {
-//            while (rs.next()) {
-//                customer = Customer.builder().
-//                        customerId(rs.getString("customer_id"))
-//                        .name(rs.getString("name"))
-//                        .email(rs.getString("email"))
-//                        .phone(rs.getString("phone"))
-//                        .age(rs.getInt("age"))
-//                        .gdpr(rs.getBoolean("gdpr"))
-//                        .customer_profile_status(rs.getBoolean("customer_profile_status"))
-//                        .deactivation_date(rs.getDate("deactivation_date"))
-//                        .reason(rs.getString("reason"))
-//                        .notes(rs.getString("notes"))
-//                        .activation_date(rs.getDate("activation_date"))
-//                        .build();
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return customer;
-//    }
-//
-//
-////    @Override
-////    public List<Customer> getByIDs(int j) {
-////
-////        List<Customer> customersList;
-////        ResultSetMapper<Customer> resultSetMapper = new ResultSetMapper<Customer>();
-////        ResultSet rs = customersDbConnection.getCustomerById(2);
-////        ResultSetMetaData rsmd = null;
-////        try {
-////            rsmd = rs.getMetaData();
-////
-////            int columnsNumber = rsmd.getColumnCount();
-////            while (rs.next()) {
-////                for (int i = 1; i <= columnsNumber; i++) {
-////                    if (i > 1) System.out.print(",  ");
-////                    String columnValue = rs.getString(i);
-////                    System.out.print(columnValue + " " + rsmd.getColumnName(i));
-////                }
-////                System.out.println("");
-////            }
-////        } catch (SQLException e) {
-////            throw new RuntimeException(e);
-////        }
-////        List<Customer> pojoList = resultSetMapper.mapResultSetToObject(rs, Customer.class);
-////        System.out.println(pojoList.toString());
-////        return pojoList;
-////    }
-//
+    /**
+     * getByID() method will get customer by id,
+     * will map the values from result set to Customer object
+     * and will return Customer.
+     */
+    @Override
+    public Customer getByID(int id) {
+        Customer customer = null;
+
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            PreparedStatement ps = conn.prepareStatement(SQLQueries.GET_CUSTOMER_BY_ID);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            try {
+                while (rs.next()) {
+                    customer = mapResultSetToCustomer(rs);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(customer);
+        return customer;
+    }
+
+    /**
+     * Method getByIDs() will get a list of customers,
+     * then it will find them in the DB and will return a list of customers.
+     */
+    @Override
+    public List<Customer> getByIDs(List<Integer> ids) {
+
+        List<Customer> customersList = new ArrayList<>();
+
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            //Next logic will create as many "?" as the size of the list "ids" is.
+            StringBuilder builder = new StringBuilder();
+            builder.append("?,".repeat(ids.size()));
+            String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
+            String query = SQLQueries.GET_CUSTOMER_BY_IDs.replace("?", placeHolders);
+
+            //Put all the values in the Query
+            PreparedStatement ps = conn.prepareStatement(query);
+            int index = 1;
+            for (Object o : ids) {
+                ps.setObject(index++, o);
+            }
+
+            //Executing the Query
+            ResultSet rs = ps.executeQuery();
+            try {
+                while (rs.next()) {
+                    Customer customer = mapResultSetToCustomer(rs);
+                    customersList.add(customer);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(customersList);
+        return customersList;
+    }
+
 
     /**
      * getRecordsCount will return the total count of all customers.
@@ -276,6 +275,25 @@ public class CustomerHelper implements CustomerDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * This method will map ResultSet to a Customer object
+     */
+    public Customer mapResultSetToCustomer(ResultSet rs) throws SQLException {
+        return Customer.builder().
+                customerId(rs.getString("customer_id"))
+                .name(rs.getString("name"))
+                .email(rs.getString("email"))
+                .phone(rs.getString("phone"))
+                .age(rs.getInt("age"))
+                .gdpr(rs.getBoolean("gdpr"))
+                .customer_profile_status(rs.getBoolean("customer_profile_status"))
+                .deactivation_date(rs.getDate("deactivation_date"))
+                .reason(rs.getString("reason"))
+                .notes(rs.getString("notes"))
+                .activation_date(rs.getDate("activation_date"))
+                .build();
     }
 
 }

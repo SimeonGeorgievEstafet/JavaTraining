@@ -1,5 +1,9 @@
 package POJO;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class TestCustomers {
     public static void main(String[] args) {
         final String ACTIVATE = "activate";
@@ -39,7 +43,8 @@ public class TestCustomers {
 
         //To be implemented in next story
 
-//        CDI.getByID(CDI.getRandomId());
-//        CDI.getByIDs(2);
+        CDI.getByID(CDI.getRandomId());
+
+        CDI.getByIDs(CDI.getRandomIds(10));
     }
 }

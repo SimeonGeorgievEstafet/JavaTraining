@@ -3,6 +3,7 @@ package POJO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface CustomerDao {
 
@@ -23,7 +24,7 @@ public interface CustomerDao {
 
     //To be implemented in next story
 
-//    Customer getByID(int i);
+    Customer getByID(int i);
 
-//    List<Customer> getByIDs(int i);
+    List<Customer> getByIDs(List<Integer>ids);
 }

@@ -68,4 +68,20 @@ public interface SQLQueries {
             "   COUNT(*) \n" +
             "FROM \n" +
             "   customers_1";
+
+    String GET_CUSTOMER_BY_ID = "select\n" +
+            "\t*\n" +
+            "from\n" +
+            "\tcustomers_1\n" +
+            "where\n" +
+            "\tcustomer_id = ?";
+
+
+    String GET_CUSTOMER_BY_IDs = "select\n" +
+            "\t*\n" +
+            "from\n" +
+            "\tcustomers_1\n" +
+            "where\n" +
+            "\tcustomer_id in (?)";
+
 }
