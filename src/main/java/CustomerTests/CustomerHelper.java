@@ -1,12 +1,11 @@
-package POJO;
+package CustomerTests;
 
 import Databases.DatabaseSingleton.DatabaseSingletonHelper;
 import com.github.javafaker.Faker;
-import org.apache.commons.lang3.ArrayUtils;
 
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,7 +23,7 @@ public class CustomerHelper implements CustomerDao {
                 .phone(faker.phoneNumber().cellPhone())
                 .age(faker.random().nextInt(18, 99))
                 .gdpr(faker.random().nextBoolean())
-                .customer_profile_status(faker.random().nextBoolean())
+                .customerProfileStatus(faker.random().nextBoolean())
                 .reason(faker.lorem().fixedString(10))
                 .notes(faker.lorem().fixedString(10))
                 .build();
@@ -47,7 +46,7 @@ public class CustomerHelper implements CustomerDao {
             ps.setString(3, customer.getPhone());
             ps.setInt(4, customer.getAge());
             ps.setBoolean(5, customer.isGdpr());
-            ps.setBoolean(6, customer.isCustomer_profile_status());
+            ps.setBoolean(6, customer.isCustomerProfileStatus());
             ps.setString(7, customer.getReason());
             ps.setString(8, customer.getNotes());
             System.out.println(ps);
@@ -277,6 +276,94 @@ public class CustomerHelper implements CustomerDao {
         }
     }
 
+
+
+
+    /**
+     * This implementation is using ResultSetMapper instead of manually
+     * mapping columns from the DB to the Customer object.
+     */
+    @Override
+    public List<Customer> getByIdResultSetMapper(List<Integer> ids) {
+        List<Customer> customersList = new ArrayList<>();
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            ResultSetMapper<Customer> resultSetMapper = new ResultSetMapper<Customer>();
+
+            //Next logic will create as many "?" as the size of the list "ids" is.
+            StringBuilder builder = new StringBuilder();
+            builder.append("?,".repeat(ids.size()));
+            String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
+            String query = SQLQueries.GET_CUSTOMER_BY_IDs.replace("?", placeHolders);
+
+            //Put all the values in the Query
+            PreparedStatement ps = conn.prepareStatement(query);
+            int index = 1;
+            for (Object o : ids) {
+                ps.setObject(index++, o);
+            }
+            //Executing the Query
+            ResultSet rs = ps.executeQuery();
+
+            //Map te result with resultSetMapper to Customer.class
+            customersList = resultSetMapper.mapResultSetToObject(rs, Customer.class);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(customersList);
+        return customersList;
+    }
+
+    /**
+     * getByIdResultSetMapper() method will get customer by id
+     * and map it to Customer.Class using ResultSetMapper.
+     */
+    @Override
+    public Customer getByIdResultSetMapper(int id) {
+        Customer customer = null;
+        ResultSetMapper<Customer> resultSetMapper = new ResultSetMapper<Customer>();
+
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            PreparedStatement ps = conn.prepareStatement(SQLQueries.GET_CUSTOMER_BY_ID);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            //Map te result with resultSetMapper to Customer.class
+            List<Customer> customersList = new ArrayList<>();
+            customersList = resultSetMapper.mapResultSetToObject(rs, Customer.class);
+            customer = customersList.get(0);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(customer);
+        return customer;
+    }
+
+    /**
+     * getByIdReflection() method will get customer by id
+     * and map it to Customer.Class using reflection.
+     */
+    @Override
+    public Customer getByIdReflection (int id) {
+        Customer customer = null;
+
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            PreparedStatement ps = conn.prepareStatement(SQLQueries.GET_CUSTOMER_BY_ID);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            try {
+                while (rs.next()) {
+                    customer = mapResultSetToReflection(rs);
+                }
+            } catch (SQLException | IllegalAccessException | NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(customer);
+        return customer;
+    }
+
     /**
      * This method will map ResultSet to a Customer object
      */
@@ -288,13 +375,78 @@ public class CustomerHelper implements CustomerDao {
                 .phone(rs.getString("phone"))
                 .age(rs.getInt("age"))
                 .gdpr(rs.getBoolean("gdpr"))
-                .customer_profile_status(rs.getBoolean("customer_profile_status"))
-                .deactivation_date(rs.getDate("deactivation_date"))
+                .customerProfileStatus(rs.getBoolean("customer_profile_status"))
+                .deactivationDate(rs.getDate("deactivation_date"))
                 .reason(rs.getString("reason"))
                 .notes(rs.getString("notes"))
-                .activation_date(rs.getDate("activation_date"))
+                .activationDate(rs.getDate("activation_date"))
                 .build();
     }
 
+    /**
+     * This method will map ResultSet to a Customer object using a Reflection method
+     */
+    public Customer mapResultSetToReflection(ResultSet rs) throws SQLException, NoSuchFieldException, IllegalAccessException {
+        Customer customer = new Customer();
+
+        Field customerIdField = customer.getClass()
+                .getDeclaredField("customerId");
+        customerIdField.setAccessible(true);
+        customerIdField.set(customer, rs.getString("customer_id"));
+
+        Field nameField = customer.getClass()
+                .getDeclaredField("name");
+        nameField.setAccessible(true);
+        nameField.set(customer, rs.getString("name"));
+
+        Field emailField = customer.getClass()
+                .getDeclaredField("email");
+        emailField.setAccessible(true);
+        emailField.set(customer, rs.getString("email"));
+
+        Field phoneField = customer.getClass()
+                .getDeclaredField("phone");
+        phoneField.setAccessible(true);
+        phoneField.set(customer, rs.getString("phone"));
+
+        Field ageField = customer.getClass()
+                .getDeclaredField("age");
+        ageField.setAccessible(true);
+        ageField.setInt(customer, rs.getInt("age"));
+
+        Field gdprField = customer.getClass()
+                .getDeclaredField("gdpr");
+        gdprField.setAccessible(true);
+        gdprField.setBoolean(customer, rs.getBoolean("gdpr"));
+
+        Field customerProfileStatusField = customer.getClass()
+                .getDeclaredField("customerProfileStatus");
+        customerProfileStatusField.setAccessible(true);
+        customerProfileStatusField.setBoolean(customer, rs.getBoolean("customer_profile_status"));
+
+        Field deactivationDateField = customer.getClass()
+                .getDeclaredField("deactivationDate");
+        deactivationDateField.setAccessible(true);
+        deactivationDateField.set(customer, rs.getDate("deactivation_date"));
+
+        Field reasonField = customer.getClass()
+                .getDeclaredField("reason");
+        reasonField.setAccessible(true);
+        reasonField.set(customer, rs.getString("reason"));
+
+        Field notesField = customer.getClass()
+                .getDeclaredField("notes");
+        notesField.setAccessible(true);
+        notesField.set(customer, rs.getString("notes"));
+
+
+        Field activationDateField = customer.getClass()
+                .getDeclaredField("activationDate");
+        activationDateField.setAccessible(true);
+        activationDateField.set(customer, rs.getDate("activation_date"));
+
+        System.out.println(customer);
+        return customer;
+    }
 }
 
