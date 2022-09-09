@@ -2,10 +2,13 @@ package CustomerTests;
 
 import Databases.DatabaseSingleton.DatabaseSingletonHelper;
 import com.github.javafaker.Faker;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -174,7 +177,7 @@ public class CustomerHelper implements CustomerDao {
             StringBuilder builder = new StringBuilder();
             builder.append("?,".repeat(ids.size()));
             String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
-            String query = SQLQueries.GET_CUSTOMER_BY_IDs.replace("?", placeHolders);
+            String query = SQLQueries.GET_CUSTOMER_BY_IDS.replace("?", placeHolders);
 
             //Put all the values in the Query
             PreparedStatement ps = conn.prepareStatement(query);
@@ -277,8 +280,6 @@ public class CustomerHelper implements CustomerDao {
     }
 
 
-
-
     /**
      * This implementation is using ResultSetMapper instead of manually
      * mapping columns from the DB to the Customer object.
@@ -293,7 +294,7 @@ public class CustomerHelper implements CustomerDao {
             StringBuilder builder = new StringBuilder();
             builder.append("?,".repeat(ids.size()));
             String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
-            String query = SQLQueries.GET_CUSTOMER_BY_IDs.replace("?", placeHolders);
+            String query = SQLQueries.GET_CUSTOMER_BY_IDS.replace("?", placeHolders);
 
             //Put all the values in the Query
             PreparedStatement ps = conn.prepareStatement(query);
@@ -343,7 +344,7 @@ public class CustomerHelper implements CustomerDao {
      * and map it to Customer.Class using reflection.
      */
     @Override
-    public Customer getByIdReflection (int id) {
+    public Customer getByIdReflection(int id) {
         Customer customer = null;
 
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
@@ -447,6 +448,68 @@ public class CustomerHelper implements CustomerDao {
 
         System.out.println(customer);
         return customer;
+    }
+
+
+    /**
+     * getByIdDbUtils() method will get customer by id
+     * and map it to Customer.Class using DbUtils with custom handler.
+     */
+    @Override
+    public Customer getByIdDbUtils(int id) {
+
+        CustomerHandler ch = new CustomerHandler();
+        List<Customer> customerList = new ArrayList<>();
+        QueryRunner queryRunner = new QueryRunner();
+
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            try {
+                customerList = queryRunner.query(conn, SQLQueries.GET_CUSTOMER_BY_ID, ch, id);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(customerList.get(0));
+            return customerList.get(0);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * getByIdsDbUtils() method will get customers by ids
+     * and will return a list with Customers
+     * using DbUtils with custom handler.
+     */
+    @Override
+    public List<Customer> getByIdsDbUtils(List<Integer> ids) {
+        List<Customer> customersList = new ArrayList<>();
+        CustomerHandler ch = new CustomerHandler();
+        QueryRunner queryRunner = new QueryRunner();
+
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            //Next logic will create as many "?" as the size of the list "ids" is.
+            StringBuilder builder = new StringBuilder();
+            builder.append("?,".repeat(ids.size()));
+            String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
+            String query = SQLQueries.GET_CUSTOMER_BY_IDS.replace("?", placeHolders);
+
+            //Put all the values in the Query
+            PreparedStatement ps = conn.prepareStatement(query);
+            int index = 1;
+            for (Object o : ids) {
+                ps.setObject(index++, o);
+            }
+
+            try {
+                customersList = queryRunner.query(conn, ps.toString(), ch);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(customersList);
+            return customersList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 

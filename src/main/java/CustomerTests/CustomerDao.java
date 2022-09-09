@@ -33,4 +33,8 @@ public interface CustomerDao {
     Customer getByIdResultSetMapper(int id);
 
     Customer getByIdReflection(int id);
+
+    Customer getByIdDbUtils(int id);
+
+    List<Customer> getByIdsDbUtils(List<Integer> ids);
 }

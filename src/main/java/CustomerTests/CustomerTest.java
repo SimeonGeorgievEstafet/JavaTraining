@@ -49,8 +49,14 @@ public class CustomerTest {
 //        Get many customers by list of ids with ResultSetMapper
         CDI.getByIdResultSetMapper(CDI.getRandomId());
 
-//        Get customer by id with Reflection
+//        Get customer by id with Reflection method
         CDI.getByIdReflection(CDI.getRandomId());
 
+
+//        Get customer by id with DB Utils method
+        CDI.getByIdDbUtils(CDI.getRandomId());
+
+//       Get customer list by ids with DB Utils method
+        CDI.getByIdsDbUtils(CDI.getRandomIds(5));
     }
 }
