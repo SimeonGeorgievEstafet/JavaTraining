@@ -5,7 +5,7 @@ public interface SQLQueries {
     String GET_RANDOM_CUSTOMER = "select\n" +
             "\tcustomer_id\n" +
             "from\n" +
-            "\tcustomers_1\n" +
+            "\tcustomers\n" +
             "order by\n" +
             "\trandom()\n" +
             "limit 1";
@@ -13,7 +13,7 @@ public interface SQLQueries {
 
     String SAVE_CUSTOMER = "insert\n" +
             "\tinto\n" +
-            "\tcustomers_1 (\n" +
+            "\tcustomers (\n" +
             "\tname,\n" +
             "\temail,\n" +
             "\tphone,\n" +
@@ -25,7 +25,7 @@ public interface SQLQueries {
             "values (?,?,?,?,?,?,?,?)RETURNING *;";
 
     String DEACTIVATE_CUSTOMER = "update\n" +
-            "\tcustomers_1\n" +
+            "\tcustomers\n" +
             "set\n" +
             "\tdeactivation_date = CURRENT_TIMESTAMP,\n" +
             "\tcustomer_profile_status = false,\n" +
@@ -36,7 +36,7 @@ public interface SQLQueries {
             "returning *;";
 
     String ACTIVATE_CUSTOMER = "update\n" +
-            "\tcustomers_1\n" +
+            "\tcustomers\n" +
             "set\n" +
             "\tdeactivation_date = null, \n" +
             "\tactivation_date = NOW(), \n" +
@@ -47,18 +47,18 @@ public interface SQLQueries {
             "\tcustomer_id = ?" +
             "returning *;";
 
-    String DELETE_USER = "DELETE FROM customers_1 \n" +
+    String DELETE_USER = "DELETE FROM customers \n" +
             "WHERE customer_id = ?\n" +
             "returning *;";
 
-    String DELETE_ALL_USERS = "TRUNCATE TABLE customers_1";
+    String DELETE_ALL_USERS = "TRUNCATE TABLE customers";
 
     String GET_RANDOM_IDS = "select\n" +
             "\tarray(\n" +
             "\tselect\n" +
             "\t\tcustomer_id\n" +
             "\tfrom\n" +
-            "\t\tcustomers_1\n" +
+            "\t\tcustomers\n" +
             "\torder by\n" +
             "\t\trandom()\n" +
             "\tlimit + ? \n" +
@@ -67,12 +67,12 @@ public interface SQLQueries {
     String GET_RECORD_COUNT = "SELECT \n" +
             "   COUNT(*) \n" +
             "FROM \n" +
-            "   customers_1";
+            "   customers";
 
     String GET_CUSTOMER_BY_ID = "select\n" +
             "\t*\n" +
             "from\n" +
-            "\tcustomers_1\n" +
+            "\tcustomers\n" +
             "where\n" +
             "\tcustomer_id = ?";
 
@@ -80,7 +80,7 @@ public interface SQLQueries {
     String GET_CUSTOMER_BY_IDS = "select\n" +
             "\t*\n" +
             "from\n" +
-            "\tcustomers_1\n" +
+            "\tcustomers\n" +
             "where\n" +
             "\tcustomer_id in (?)";
 

@@ -13,8 +13,8 @@ public class CustomerTest {
 //        save new customer
         CDI.save(customer);
 
-//        delete all customers
-        CDI.deleteAll();
+////        delete all customers
+//        CDI.deleteAll();
 
 //        Create 15 customers!
         for (int i = 0; i < 15; i++) {
