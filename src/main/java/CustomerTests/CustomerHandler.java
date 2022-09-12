@@ -2,7 +2,7 @@ package CustomerTests;
 
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.BeanProcessor;
-import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler ;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
