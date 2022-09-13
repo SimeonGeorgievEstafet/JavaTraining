@@ -1,18 +1,26 @@
-package CustomerTests;
+package Helpers;
 
+import Dao.CrudDao;
+import Databases.DatabaseManager;
+import Handlers.CustomerAddressHandler;
+import Handlers.CustomerHandler;
+import Handlers.OrderHandler;
+import POJO.Customer;
 import Databases.DatabaseSingleton.DatabaseSingletonHelper;
+import POJO.CustomerAddress;
+import POJO.Order;
 import com.github.javafaker.Faker;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public class CustomerHelper implements CustomerDao {
+public class CustomerHelper implements CrudDao {
+
+    DatabaseManager dbm = new DatabaseManager();
 
     /**
      * CreateCustomer method will user Faker to create valid data for customer.
@@ -41,60 +49,18 @@ public class CustomerHelper implements CustomerDao {
      * will be executed and customer will be saved in DB.
      */
     @Override
-    public void save(Customer customer) {
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            PreparedStatement ps = conn.prepareStatement(SQLQueries.SAVE_CUSTOMER);
-            ps.setString(1, customer.getName());
-            ps.setString(2, customer.getEmail());
-            ps.setString(3, customer.getPhone());
-            ps.setInt(4, customer.getAge());
-            ps.setBoolean(5, customer.isGdpr());
-            ps.setBoolean(6, customer.isCustomerProfileStatus());
-            ps.setString(7, customer.getReason());
-            ps.setString(8, customer.getNotes());
-            System.out.println(ps);
-            ResultSet rs = ps.executeQuery();
-
-            // Extract data from result set
-            ResultSetMetaData rsmd = null;
-            rsmd = rs.getMetaData();
-            while (rs.next()) {
-                int columnsNumber = rsmd.getColumnCount();
-                for (int i = 1; i <= columnsNumber; i++) {
-                    if (i > 1) System.out.print(",  ");
-                    String columnValue = rs.getString(i);
-                    System.out.print(columnValue + " " + rsmd.getColumnName(i));
-                }
-                System.out.println("");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void save(Object object) {
+        dbm.save(object, SQLQueries.SAVE_CUSTOMER);
     }
 
     /**
      * Method update() will activate or deactivate customer by given customerId.
      */
-    @Override
     public void update(String status, int customerId) {
         if (Objects.equals(status, "activate")) {
-            try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-                PreparedStatement ps = conn.prepareStatement(SQLQueries.ACTIVATE_CUSTOMER);
-                ps.setInt(1, customerId);
-                ps.executeQuery();
-                System.out.println("Customer is active!");
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            dbm.update(new Customer(), SQLQueries.ACTIVATE_CUSTOMER, customerId);
         } else {
-            try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-                PreparedStatement ps = conn.prepareStatement(SQLQueries.DEACTIVATE_CUSTOMER);
-                ps.setInt(1, customerId);
-                ps.executeQuery();
-                System.out.println("Customer deactivated!");
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            dbm.update(new Customer(), SQLQueries.DEACTIVATE_CUSTOMER, customerId);
         }
     }
 
@@ -103,20 +69,12 @@ public class CustomerHelper implements CustomerDao {
      */
     @Override
     public void delete(int customerId) {
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            PreparedStatement ps = conn.prepareStatement(SQLQueries.DELETE_USER);
-            ps.setInt(1, customerId);
-            ps.executeQuery();
-            System.out.println("Customer with id = " + customerId + " was deleted");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        dbm.delete(customerId, SQLQueries.DELETE_CUSTOMER);
     }
 
     /**
      * This method will get random customer from the DB and will return customerId
      */
-    @Override
     public int getRandomId() {
         int CustomerId = 0;
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
@@ -167,7 +125,6 @@ public class CustomerHelper implements CustomerDao {
      * Method getByIDs() will get a list of customers,
      * then it will find them in the DB and will return a list of customers.
      */
-    @Override
     public List<Customer> getByIDs(List<Integer> ids) {
 
         List<Customer> customersList = new ArrayList<>();
@@ -207,7 +164,6 @@ public class CustomerHelper implements CustomerDao {
     /**
      * getRecordsCount will return the total count of all customers.
      */
-    @Override
     public int getRecordsCount() {
         int CustomerId = 0;
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
@@ -234,7 +190,6 @@ public class CustomerHelper implements CustomerDao {
      * The result of the QUERY will be a String with randomIDs from the DB.
      * After set of transformation the method will return ArrayList with random IDs.
      */
-    @Override
     public ArrayList<Integer> getRandomIds(int j) {
         ArrayList<Integer> customerIds = new ArrayList<>();
 
@@ -268,7 +223,6 @@ public class CustomerHelper implements CustomerDao {
     /**
      * This method will truncate the table customers_1
      */
-    @Override
     public void deleteAll() {
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
             Statement stmt = conn.createStatement();
@@ -284,7 +238,6 @@ public class CustomerHelper implements CustomerDao {
      * This implementation is using ResultSetMapper instead of manually
      * mapping columns from the DB to the Customer object.
      */
-    @Override
     public List<Customer> getByIdResultSetMapper(List<Integer> ids) {
         List<Customer> customersList = new ArrayList<>();
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
@@ -318,7 +271,6 @@ public class CustomerHelper implements CustomerDao {
      * getByIdResultSetMapper() method will get customer by id
      * and map it to Customer.Class using ResultSetMapper.
      */
-    @Override
     public Customer getByIdResultSetMapper(int id) {
         Customer customer = null;
         ResultSetMapper<Customer> resultSetMapper = new ResultSetMapper<Customer>();
@@ -343,7 +295,6 @@ public class CustomerHelper implements CustomerDao {
      * getByIdReflection() method will get customer by id
      * and map it to Customer.Class using reflection.
      */
-    @Override
     public Customer getByIdReflection(int id) {
         Customer customer = null;
 
@@ -455,32 +406,18 @@ public class CustomerHelper implements CustomerDao {
      * getByIdDbUtils() method will get customer by id
      * and map it to Customer.Class using DbUtils with custom handler.
      */
-    @Override
     public Customer getByIdDbUtils(int id) {
-
         CustomerHandler ch = new CustomerHandler();
-        List<Customer> customerList = new ArrayList<>();
-        QueryRunner queryRunner = new QueryRunner();
-
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            try {
-                customerList = queryRunner.query(conn, SQLQueries.GET_CUSTOMER_BY_ID, ch, id);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println(customerList.get(0));
-            return customerList.get(0);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        Customer customer = (Customer) dbm.getByID(id, SQLQueries.GET_CUSTOMER_BY_ID, ch);
+        return customer;
     }
+
 
     /**
      * getByIdsDbUtils() method will get customers by ids
      * and will return a list with Customers
      * using DbUtils with custom handler.
      */
-    @Override
     public List<Customer> getByIdsDbUtils(List<Integer> ids) {
         List<Customer> customersList = new ArrayList<>();
         CustomerHandler ch = new CustomerHandler();
@@ -507,6 +444,48 @@ public class CustomerHelper implements CustomerDao {
             }
             System.out.println(customersList);
             return customersList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * getCustomerAddress() method will get customer address.
+     */
+    public CustomerAddress getCustomerAddress(int id) {
+        CustomerAddressHandler cah = new CustomerAddressHandler();
+        List<CustomerAddress> customerAddressList = new ArrayList<>();
+        QueryRunner queryRunner = new QueryRunner();
+
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            try {
+                customerAddressList = queryRunner.query(conn, SQLQueries.GET_CUSTOMER_ADDRESS_BY_ID, cah, id);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(customerAddressList.get(0));
+            return customerAddressList.get(0);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * getCustomerAddress() method will get customer address.
+     */
+    public List<Order> getCustomerOrders(int id) {
+        OrderHandler oh = new OrderHandler();
+        List<Order> orderList = new ArrayList<>();
+        QueryRunner queryRunner = new QueryRunner();
+
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            try {
+                orderList = queryRunner.query(conn, SQLQueries.GET_ALL_CUSTOMER_ORDERS, oh, id);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(orderList);
+            return orderList;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

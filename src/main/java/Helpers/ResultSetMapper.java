@@ -1,4 +1,4 @@
-package CustomerTests;
+package Helpers;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

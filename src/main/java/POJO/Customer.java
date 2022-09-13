@@ -1,11 +1,13 @@
-package CustomerTests;
+package POJO;
 
+import com.github.javafaker.Address;
 import jakarta.persistence.*;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -52,4 +54,7 @@ public class Customer implements Serializable {
     @Column(name="notes")
     String notes;
 
+    Address address;
+
+    List<Order> order;
 }

@@ -1,5 +1,6 @@
-package CustomerTests;
+package Handlers;
 
+import POJO.Customer;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.BeanProcessor;
 import org.apache.commons.dbutils.handlers.BeanListHandler ;
@@ -18,8 +19,7 @@ public class CustomerHandler extends BeanListHandler<Customer> {
     }
 
     public List<Customer> handle(ResultSet rs) throws SQLException {
-            List<Customer> customers = super.handle(rs);
-        return customers;
+        return super.handle(rs);
     }
 
     public static Map<String,String> mapColumnsToFields() {
