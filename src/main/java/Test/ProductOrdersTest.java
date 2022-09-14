@@ -16,8 +16,8 @@ public class ProductOrdersTest {
         ProductsOrderDao productsOrderDao = new ProductsOrderDao();
         productsOrderDao.getByID(25);
 
-//        ProductOrder productOrder = new ProductsOrderHelper().CreateProductOrder();
-        ProductOrder productOrder = new ProductsOrderHelper().CreateProductOrder(2,4,5);
+        ProductOrder productOrder = new ProductsOrderHelper().CreateProductOrder();
+//        ProductOrder productOrder = new ProductsOrderHelper().CreateProductOrder(2,4,5);
 
         productsOrderDao.save(productOrder);
 

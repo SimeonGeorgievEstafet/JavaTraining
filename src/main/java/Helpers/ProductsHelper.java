@@ -35,16 +35,7 @@ public class ProductsHelper {
     public List<Product> CreateProducts(int numberOfProducts) {
         List<Product> productsList = new ArrayList<>();
         for (int i = 0; i < numberOfProducts; i++) {
-            Product product = Product.builder()
-                    .productName(faker.food().fruit())
-                    .availableQuantity(faker.random().nextInt(1, 100))
-                    .productType(faker.food().vegetable())
-                    .priceWithoutVat(faker.number().randomDouble(2, 1, 99))
-                    .priceWithVat(faker.number().randomDouble(2, 1, 99))
-                    .inStock(faker.random().nextBoolean())
-                    .supplier(faker.random().nextInt(1, 3))
-                    .build();
-            productsList.add(product);
+            productsList.add(CreateProduct());
         }
         System.out.println(productsList);
         return productsList;

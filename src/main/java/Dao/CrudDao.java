@@ -2,10 +2,11 @@ package Dao;
 
 import POJO.Product;
 
-public interface CrudDao {
-    void save(Object object);
+public interface CrudDao<T> {
 
-    Object getByID(int id);
+    void save(T object);
+
+    T getByID(int id);
 
     void delete(int id);
 

@@ -32,12 +32,7 @@ public class OrderHelper {
     public List<Order> CreateOrders(int numberOfOrders) {
         List<Order> orderList = new ArrayList<>();
         for (int i = 0; i < numberOfOrders; i++) {
-            Order order = Order.builder()
-                    .customerId(faker.random().nextInt(1001, 1119))
-                    .isOrderCompleted(Boolean.FALSE)
-                    .isOrderPaid(faker.random().nextBoolean())
-                    .build();
-            orderList.add(order);
+            orderList.add(CreateOrder());
         }
         System.out.println(orderList);
         return orderList;

@@ -36,17 +36,7 @@ public class CustomerHelper {
     public List<Customer> CreateCustomers(int numberOfCustomers) {
         List<Customer> customerList = new ArrayList<>();
         for (int i = 0; i < numberOfCustomers; i++) {
-            Customer customer = Customer.builder()
-                    .name(faker.name().name())
-                    .email(faker.internet().emailAddress())
-                    .phone(faker.phoneNumber().cellPhone())
-                    .age(faker.random().nextInt(18, 99))
-                    .gdpr(faker.random().nextBoolean())
-                    .customerProfileStatus(faker.random().nextBoolean())
-                    .reason(faker.lorem().fixedString(10))
-                    .notes(faker.lorem().fixedString(10))
-                    .build();
-            customerList.add(customer);
+            customerList.add(CreateCustomer());
         }
         System.out.println(customerList);
         return customerList;

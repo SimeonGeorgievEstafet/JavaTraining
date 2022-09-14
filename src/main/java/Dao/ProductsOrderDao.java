@@ -6,7 +6,7 @@ import Helpers.SQLQueries;
 import POJO.ProductOrder;
 import com.github.javafaker.Faker;
 
-public class ProductsOrderDao implements CrudDao {
+public class ProductsOrderDao implements CrudDao<ProductOrder> {
 
     DatabaseManager dbm = new DatabaseManager();
 
@@ -16,9 +16,8 @@ public class ProductsOrderDao implements CrudDao {
      * will be executed and product will be saved in DB.
      */
     @Override
-    public void save(Object object) {
-        ProductOrder productOrder = (ProductOrder) object;
-        dbm.save(productOrder, SQLQueries.SAVE_PRODUCT_ORDER);
+    public void save(ProductOrder object) {
+        dbm.save(object, SQLQueries.SAVE_PRODUCT_ORDER);
     }
 
     /**

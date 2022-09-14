@@ -45,12 +45,7 @@ public class ProductsOrderHelper {
     public List<ProductOrder> CreateProductOrders(int numberOfProductOrders) {
         List<ProductOrder> productOrderList = new ArrayList<>();
         for (int i = 0; i < numberOfProductOrders; i++) {
-            ProductOrder productOrder = ProductOrder.builder()
-                    .orderId(String.valueOf(faker.random().nextInt(1021, 1104)))
-                    .productId(String.valueOf(faker.random().nextInt(19, 120)))
-                    .orderedQuantity(faker.random().nextInt(1, 100))
-                    .build();
-            productOrderList.add(productOrder);
+            productOrderList.add(CreateProductOrder());
         }
         System.out.println(productOrderList);
         return productOrderList;

@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderDao implements CrudDao {
+public class OrderDao implements CrudDao<Order> {
 
     DatabaseManager dbm = new DatabaseManager();
 
@@ -25,7 +25,7 @@ public class OrderDao implements CrudDao {
      * will be executed and order will be saved in DB.
      */
     @Override
-    public void save(Object object) {
+    public void save(Order object) {
         dbm.save(object, SQLQueries.SAVE_ORDER);
     }
 

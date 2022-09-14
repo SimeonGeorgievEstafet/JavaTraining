@@ -5,7 +5,7 @@ import Handlers.ProductHandler;
 import Helpers.SQLQueries;
 import POJO.Product;
 
-public class ProductsDao implements CrudDao {
+public class ProductsDao implements CrudDao<Product> {
 
     DatabaseManager dbm = new DatabaseManager();
 
@@ -16,7 +16,7 @@ public class ProductsDao implements CrudDao {
      * will be executed and product will be saved in DB.
      */
     @Override
-    public void save(Object object) {
+    public void save(Product object) {
         Product product = (Product) object;
         dbm.save(product, SQLQueries.SAVE_PRODUCT);
     }

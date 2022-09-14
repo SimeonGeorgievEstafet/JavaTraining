@@ -5,7 +5,7 @@ import Handlers.CustomerAddressHandler;
 import Helpers.SQLQueries;
 import POJO.CustomerAddress;
 
-public class CustomerAddressDao implements CrudDao {
+public class CustomerAddressDao implements CrudDao<CustomerAddress> {
     DatabaseManager dbm = new DatabaseManager();
 
 
@@ -15,7 +15,7 @@ public class CustomerAddressDao implements CrudDao {
      * will be executed and customer will be saved in DB.
      */
     @Override
-    public void save(Object object) {
+    public void save(CustomerAddress object) {
         dbm.save(object, SQLQueries.SAVE_CUSTOMER_ADDRESS);
     }
 

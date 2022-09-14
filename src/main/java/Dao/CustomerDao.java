@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class CustomerDao implements CrudDao {
+public class CustomerDao implements CrudDao<Customer> {
 
     DatabaseManager dbm = new DatabaseManager();
 
@@ -28,7 +28,7 @@ public class CustomerDao implements CrudDao {
      * will be executed and customer will be saved in DB.
      */
     @Override
-    public void save(Object object) {
+    public void save(Customer object) {
         dbm.save(object, SQLQueries.SAVE_CUSTOMER);
     }
 
