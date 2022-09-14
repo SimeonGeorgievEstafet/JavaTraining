@@ -193,5 +193,37 @@ public interface SQLQueries {
             "\torder_id in(?)\n" +
             "returning *;";
 
+    String SAVE_PRODUCT_ORDER = "insert\n" +
+            "\tinto\n" +
+            "\tproduct_orders (\n" +
+            "\torder_id ,\n" +
+            "\tproduct_id ,\n" +
+            "\tordered_quantity)\n" +
+            "values (?,?,?)RETURNING *;";
 
+    String GET_PRODUCT_ORDER_BY_ID = "select\n" +
+            "\t*\n" +
+            "from\n" +
+            "\tproduct_orders\n" +
+            "where\n" +
+            "\tproduct_order_id in (?)";
+
+    String DELETE_PRODUCT_ORDER = "DELETE FROM product_orders \n" +
+            "WHERE product_order_id = ?\n" +
+            "returning *;";
+
+    String UPDATE_PRODUCT_ORDER = "update\n" +
+            "\tproduct_orders \n" +
+            "set\n" +
+            "\tordered_quantity  = ? \n" +
+            "where\n" +
+            "\tproduct_order_id = ?\n" +
+            "returning *;";
+
+    String GET_PRODUCT_ORDER_BY_ORDER_ID = "select\n" +
+            "\t*\n" +
+            "from\n" +
+            "\tproduct_orders\n" +
+            "where\n" +
+            "\torder_id in (?)";
 }

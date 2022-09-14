@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -37,5 +38,7 @@ public class Order implements Serializable {
 
     @Column(name = "date_of_order_completed")
     Date isOrderPayedCompleted;
+
+    List<ProductOrder> productOrders;
 
 }
