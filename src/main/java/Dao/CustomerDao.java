@@ -18,19 +18,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class CustomerDao implements CrudDao<Customer> {
+public class CustomerDao extends DatabaseManager implements CrudDao<Customer>,SQLQueries {
 
     DatabaseManager dbm = new DatabaseManager();
 
-    /**
-     * Method save() will get created customer and will prepare a
-     * SQL statement with correct parameters. After that the Query
-     * will be executed and customer will be saved in DB.
-     */
     @Override
-    public void save(Customer object) {
-        dbm.save(object, SQLQueries.SAVE_CUSTOMER);
+    public void save(Customer customer) {
+        try {
+            executeQuery(String.format(SAVE_CUSTOMER,customer.toString()));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+//    /**
+//     * Method save() will get created customer and will prepare a
+//     * SQL statement with correct parameters. After that the Query
+//     * will be executed and customer will be saved in DB.
+//     */
+//    @Override
+//    public void save(Customer object) {
+//        dbm.save(object, SQLQueries.SAVE_CUSTOMER);
+//    }
 
     /**
      * Method update() will activate or deactivate customer by given customerId.

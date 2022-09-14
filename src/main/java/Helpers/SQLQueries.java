@@ -10,7 +10,6 @@ public interface SQLQueries {
             "\trandom()\n" +
             "limit 1";
 
-
     String SAVE_CUSTOMER = "insert\n" +
             "\tinto\n" +
             "\tcustomers (\n" +
@@ -22,7 +21,20 @@ public interface SQLQueries {
             "\tcustomer_profile_status,\n" +
             "\treason,\n" +
             "\tnotes)\n" +
-            "values (?,?,?,?,?,?,?,?)RETURNING *;";
+            "values (%s) RETURNING *;";
+
+//    String SAVE_CUSTOMER = "insert\n" +
+//            "\tinto\n" +
+//            "\tcustomers (\n" +
+//            "\tname,\n" +
+//            "\temail,\n" +
+//            "\tphone,\n" +
+//            "\tage,\n" +
+//            "\tgdpr,\n" +
+//            "\tcustomer_profile_status,\n" +
+//            "\treason,\n" +
+//            "\tnotes)\n" +
+//            "values (?,?,?,?,?,?,?,?)RETURNING *;";
 
     String DEACTIVATE_CUSTOMER = "update\n" +
             "\tcustomers\n" +
