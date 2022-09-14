@@ -2,7 +2,9 @@ package Databases.DatabaseFactory;
 
 import Databases.PropertiesHelper;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * A DatabaseFactoryHelper class will produce

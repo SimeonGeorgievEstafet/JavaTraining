@@ -14,7 +14,7 @@ public class ProductsTest {
         productsDao.save(product);
         productsDao.getByID(68);
 //        productsDao.delete(68);
-        productsDao.update(new ProductsHelper().CreateObject(),1);
+        productsDao.update(new ProductsHelper().CreateObject(), 1);
 
         List<Product> productList = new ProductsHelper().CreateObjects(5);
     }

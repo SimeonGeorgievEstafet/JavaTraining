@@ -1,15 +1,14 @@
 package Databases;
 
 import Databases.DatabaseSingleton.DatabaseSingletonHelper;
-import Handlers.ProductHandler;
 import Helpers.SQLQueries;
 import POJO.*;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class will handle basic CRUD operations.
@@ -17,17 +16,40 @@ import java.util.List;
 public class DatabaseManager {
 
 
-    public static void executeQuery(String query) throws SQLException {
+    public static void executeQuery(String query) {
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
             PreparedStatement ps = conn.prepareStatement(query);
-            ps.executeQuery();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            if (query.contains("TRUNCATE"))
+                ps.executeUpdate();
+            else
+                ps.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
-     *Method save() will receive object(Customer,Product ...) and will execute query.
+     * getByID() method will return Object(Customer,Order,CustomerAddress,Product) by,
+     * required id, query and ObjectHandler(ProductHandler,OrderHandler...)
+     */
+    public Object getByID(int id, String query, Object object) {
+        List<Object> objectList;
+        QueryRunner queryRunner = new QueryRunner();
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            try {
+                objectList = queryRunner.query(conn, query, (ResultSetHandler<? extends List<Object>>) object, id);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(objectList.get(0));
+            return objectList.get(0);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Method save() will receive object(Customer,Product ...) and will execute query.
      */
     public void save(Object object, String query) {
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
@@ -108,25 +130,25 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * getByID() method will return Object(Customer,Order,CustomerAddress,Product) by,
-     * required id, query and ObjectHandler(ProductHandler,OrderHandler...)
-     */
-    public Object getByID(int id, String query, Object object) {
-        List<Object> objectList;
-        QueryRunner queryRunner = new QueryRunner();
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            try {
-                objectList = queryRunner.query(conn, query, (ResultSetHandler<? extends List<Object>>) object, id);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println(objectList.get(0));
-            return objectList.get(0);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    /**
+//     * getByID() method will return Object(Customer,Order,CustomerAddress,Product) by,
+//     * required id, query and ObjectHandler(ProductHandler,OrderHandler...)
+//     */
+//    public Object getByID(int id, String query, Object object) {
+//        List<Object> objectList;
+//        QueryRunner queryRunner = new QueryRunner();
+//        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+//            try {
+//                objectList = queryRunner.query(conn, query, (ResultSetHandler<? extends List<Object>>) object, id);
+//            } catch (SQLException e) {
+//                throw new RuntimeException(e);
+//            }
+//            System.out.println(objectList.get(0));
+//            return objectList.get(0);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     /**
      * Method delete() will delete record in the db by id and query.

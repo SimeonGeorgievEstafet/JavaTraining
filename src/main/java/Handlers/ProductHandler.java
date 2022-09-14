@@ -1,6 +1,5 @@
 package Handlers;
 
-import POJO.Customer;
 import POJO.Product;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.BeanProcessor;
@@ -17,10 +16,6 @@ public class ProductHandler extends BeanListHandler<Product> {
         super(Product.class, new BasicRowProcessor(new BeanProcessor(mapColumnsToFields())));
     }
 
-    public List<Product> handle(ResultSet rs) throws SQLException {
-        return super.handle(rs);
-    }
-
     public static Map<String, String> mapColumnsToFields() {
         Map<String, String> columnsToFieldsMap = new HashMap<>();
         columnsToFieldsMap.put("product_id", "productId");
@@ -31,5 +26,9 @@ public class ProductHandler extends BeanListHandler<Product> {
         columnsToFieldsMap.put("price_with_vat", "priceWithVat");
         columnsToFieldsMap.put("in_stock", "inStock");
         return columnsToFieldsMap;
+    }
+
+    public List<Product> handle(ResultSet rs) throws SQLException {
+        return super.handle(rs);
     }
 }

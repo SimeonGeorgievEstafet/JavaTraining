@@ -18,28 +18,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class CustomerDao extends DatabaseManager implements CrudDao<Customer>,SQLQueries {
+public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, SQLQueries {
 
     DatabaseManager dbm = new DatabaseManager();
 
+    /**
+     * //     * Method save() will get created customer and will prepare a
+     * //     * SQL statement with correct parameters. After that the Query
+     * //     * will be executed and customer will be saved in DB.
+     * //
+     */
     @Override
     public void save(Customer customer) {
-        try {
-            executeQuery(String.format(SAVE_CUSTOMER,customer.toString()));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        executeQuery(String.format(SAVE_CUSTOMER, customer.toString()));
     }
 
-//    /**
-//     * Method save() will get created customer and will prepare a
-//     * SQL statement with correct parameters. After that the Query
-//     * will be executed and customer will be saved in DB.
-//     */
-//    @Override
-//    public void save(Customer object) {
-//        dbm.save(object, SQLQueries.SAVE_CUSTOMER);
-//    }
+    /**
+     * delete() will delete a customer by given customerId
+     */
+    @Override
+    public void delete(int customerId) {
+        executeQuery(String.format(DELETE_CUSTOMER, customerId));
+    }
+
+    /**
+     * delete() will delete a customer by given customerId
+     */
+    public void deleteAll(String database) {
+        executeQuery(String.format(DELETE_ALL_USERS,database));
+    }
 
     /**
      * Method update() will activate or deactivate customer by given customerId.
@@ -51,14 +58,14 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>,SQ
             dbm.update(new Customer(), SQLQueries.DEACTIVATE_CUSTOMER, customerId);
         }
     }
-
-    /**
-     * delete() will delete a customer by given customerId
-     */
-    @Override
-    public void delete(int customerId) {
-        dbm.delete(customerId, SQLQueries.DELETE_CUSTOMER);
-    }
+//
+//    /**
+//     * delete() will delete a customer by given customerId
+//     */
+//    @Override
+//    public void delete(int customerId) {
+//        dbm.delete(customerId, SQLQueries.DELETE_CUSTOMER);
+//    }
 
     /**
      * This method will get random customer from the DB and will return customerId
@@ -208,18 +215,18 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>,SQ
         return customerIds;
     }
 
-    /**
-     * This method will truncate the table customers_1
-     */
-    public void deleteAll() {
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            Statement stmt = conn.createStatement();
-            stmt.execute(SQLQueries.DELETE_ALL_USERS);
-            System.out.println("Table customers_1 was deleted");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    /**
+//     * This method will truncate the table customers_1
+//     */
+//    public void deleteAll() {
+//        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+//            Statement stmt = conn.createStatement();
+//            stmt.execute(SQLQueries.DELETE_ALL_USERS);
+//            System.out.println("Table customers_1 was deleted");
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 
     /**

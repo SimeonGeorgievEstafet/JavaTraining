@@ -2,7 +2,9 @@ package Databases.DatabaseSingleton;
 
 import Databases.PropertiesHelper;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * A DatabaseSingletonHelper class will produce single DB connection,
@@ -10,8 +12,8 @@ import java.sql.*;
  */
 public class DatabaseSingletonHelper {
 
-    private static DatabaseSingletonHelper instance = new DatabaseSingletonHelper();
     static Connection conn;
+    private static DatabaseSingletonHelper instance = new DatabaseSingletonHelper();
 
     private DatabaseSingletonHelper() {
     }

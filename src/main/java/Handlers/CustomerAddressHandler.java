@@ -16,14 +16,14 @@ public class CustomerAddressHandler extends BeanListHandler<CustomerAddress> {
         super(CustomerAddress.class, new BasicRowProcessor(new BeanProcessor(mapColumnsToFields())));
     }
 
-    public List<CustomerAddress> handle(ResultSet rs) throws SQLException {
-        return super.handle(rs);
-    }
-
     public static Map<String, String> mapColumnsToFields() {
         Map<String, String> columnsToFieldsMap = new HashMap<>();
         columnsToFieldsMap.put("customer_address_id", "customerAddressId");
         columnsToFieldsMap.put("postal_code", "postalCode");
         return columnsToFieldsMap;
+    }
+
+    public List<CustomerAddress> handle(ResultSet rs) throws SQLException {
+        return super.handle(rs);
     }
 }

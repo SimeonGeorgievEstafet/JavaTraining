@@ -4,7 +4,6 @@ import Databases.DatabaseManager;
 import Handlers.ProductOrderHandler;
 import Helpers.SQLQueries;
 import POJO.ProductOrder;
-import com.github.javafaker.Faker;
 
 public class ProductsOrderDao implements CrudDao<ProductOrder> {
 

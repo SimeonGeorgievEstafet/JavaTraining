@@ -1,10 +1,8 @@
 package Handlers;
 
-import POJO.Product;
 import POJO.ProductOrder;
 import org.apache.commons.dbutils.BasicRowProcessor;
 import org.apache.commons.dbutils.BeanProcessor;
-import org.apache.commons.dbutils.RowProcessor;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import java.sql.ResultSet;
@@ -20,11 +18,6 @@ public class ProductOrderHandler extends BeanListHandler<ProductOrder> {
         super(ProductOrder.class, new BasicRowProcessor(new BeanProcessor(mapColumnsToFields())));
     }
 
-
-    public List<ProductOrder> handle(ResultSet rs) throws SQLException {
-        return super.handle(rs);
-    }
-
     public static Map<String, String> mapColumnsToFields() {
         Map<String, String> columnsToFieldsMap = new HashMap<>();
         columnsToFieldsMap.put("product_order_id", "productOrderId");
@@ -32,5 +25,9 @@ public class ProductOrderHandler extends BeanListHandler<ProductOrder> {
         columnsToFieldsMap.put("order_id", "orderId");
         columnsToFieldsMap.put("ordered_quantity", "orderedQuantity");
         return columnsToFieldsMap;
+    }
+
+    public List<ProductOrder> handle(ResultSet rs) throws SQLException {
+        return super.handle(rs);
     }
 }
