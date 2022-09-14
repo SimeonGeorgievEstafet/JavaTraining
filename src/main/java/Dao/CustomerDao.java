@@ -44,6 +44,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
     /**
      * deleteAll() will truncate a table by given table name
      */
+    @Override
     public void deleteAll(String database) {
         executeQuery(String.format(DELETE_ALL_USERS, database));
     }

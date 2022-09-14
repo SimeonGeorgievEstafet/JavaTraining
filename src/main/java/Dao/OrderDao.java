@@ -46,6 +46,11 @@ public class OrderDao implements CrudDao<Order> {
         dbm.delete(orderId, SQLQueries.DELETE_ORDER);
     }
 
+    @Override
+    public void deleteAll(String database) {
+
+    }
+
     /**
      * Method update() will make order paid by order id.
      */
