@@ -16,6 +16,16 @@ import java.util.List;
  */
 public class DatabaseManager {
 
+
+    public static void executeQuery(String query) throws SQLException {
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.executeQuery();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+    }
+
     /**
      *Method save() will receive object(Customer,Product ...) and will execute query.
      */
