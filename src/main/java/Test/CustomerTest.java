@@ -1,72 +1,77 @@
 package Test;
 
+import Dao.CustomerDao;
 import Helpers.CustomerAddressHelper;
 import Helpers.CustomerHelper;
 import Helpers.ProductsHelper;
 import POJO.Customer;
 import POJO.Product;
 
+import java.util.List;
+
 public class CustomerTest {
     public static void main(String[] args) {
+
         final String ACTIVATE = "activate";
         final String DEACTIVATE = "deactivate";
-        CustomerHelper CH = new CustomerHelper();
-        Customer customer = CH.CreateCustomer();
+        Customer customer = new CustomerHelper().CreateCustomer();
+        CustomerDao customerDao = new CustomerDao();
 
-        CH.getCustomerAddress(13);
-        CH.getCustomerOrders(2);
+        List<Customer> customerList = new CustomerHelper().CreateCustomers(6);
+        customerDao.getCustomerAddress(13);
+        customerDao.getCustomerOrders(2);
 
 //        Get random customerId
-        CH.getRandomId();
+        customerDao.getRandomId();
 
 //        save new customer
-        CH.save(customer);
+        customerDao.save(customer);
 
-//        delete all customers
-        CH.deleteAll();
+////        delete all customers
+//        customerDao.deleteAll();
 
 //        Create 15 customers!
         for (int i = 0; i < 100; i++) {
-            Customer customer2 = CH.CreateCustomer();
-            CH.save(customer2);
+            Customer customer2 = new CustomerHelper().CreateCustomer();
+            customerDao.save(customer2);
         }
 
 
 //        Deactivate customer
-        CH.update(DEACTIVATE, 6);
+        customerDao.update(DEACTIVATE, 6);
 
 //        Activate customer
-        CH.update(ACTIVATE, 6);
+        customerDao.update(ACTIVATE, 6);
 
 //        Delete customer by ID
-        CH.delete(1001);
+        customerDao.delete(1001);
 
 //        Get many random customerIDs
-        CH.getRandomIds(5);
+        customerDao.getRandomIds(5);
 
 //        Get total count of customers
-        CH.getRecordsCount();
+        customerDao.getRecordsCount();
 
 //        Get customer by id with manual mapping of the fields
-        CH.getByID(CH.getRandomId());
+        customerDao.getByID(customerDao.getRandomId());
 
 //        Get many customers by list of ids with manual mapping of the fields
-        CH.getByIDs(CH.getRandomIds(5));
+        customerDao.getByIDs(customerDao.getRandomIds(5));
 
 //        Get customer by id with ResultSetMapper
-        CH.getByIdResultSetMapper(CH.getRandomIds(3));
+        customerDao.getByIdResultSetMapper(customerDao.getRandomIds(3));
 
 //        Get many customers by list of ids with ResultSetMapper
-        CH.getByIdResultSetMapper(CH.getRandomId());
+        customerDao.getByIdResultSetMapper(customerDao.getRandomId());
 
 //        Get customer by id with Reflection method
-        CH.getByIdReflection(CH.getRandomId());
+        customerDao.getByIdReflection(customerDao.getRandomId());
 
 
 //        Get customer by id with DB Utils method
-        CH.getByIdDbUtils(CH.getRandomId());
+        customerDao.getByIdDbUtils(customerDao.getRandomId());
 //
 ////       Get customer list by ids with DB Utils method
-//        CH.getByIdsDbUtils(CH.getRandomIds(5));
+//        customerDao.getByIdsDbUtils(customerDao.getRandomIds(5));
     }
 }

@@ -3,10 +3,7 @@ package Databases;
 import Databases.DatabaseSingleton.DatabaseSingletonHelper;
 import Handlers.ProductHandler;
 import Helpers.SQLQueries;
-import POJO.Customer;
-import POJO.CustomerAddress;
-import POJO.Order;
-import POJO.Product;
+import POJO.*;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 
@@ -39,6 +36,7 @@ public class DatabaseManager {
                     ps.setBoolean(6, product.getInStock());
                     ps.setInt(7, product.getSupplier());
                     rs = ps.executeQuery();
+                    break;
                 case SQLQueries.SAVE_ORDER:
                     Order order = (Order) object;
                     ps = conn.prepareStatement(query);
@@ -47,6 +45,7 @@ public class DatabaseManager {
                     ps.setBoolean(3, order.getIsOrderPaid());
                     System.out.println(ps);
                     rs = ps.executeQuery();
+                    break;
                 case SQLQueries.SAVE_CUSTOMER_ADDRESS:
                     CustomerAddress customerAddress = (CustomerAddress) object;
                     ps = conn.prepareStatement(query);
@@ -56,6 +55,15 @@ public class DatabaseManager {
                     ps.setString(4, customerAddress.getState());
                     ps.setInt(5, customerAddress.getPostalCode());
                     ps.setString(6, customerAddress.getCountry());
+                    System.out.println(ps);
+                    rs = ps.executeQuery();
+                    break;
+                case SQLQueries.SAVE_PRODUCT_ORDER:
+                    ProductOrder productOrder = (ProductOrder) object;
+                    ps = conn.prepareStatement(query);
+                    ps.setInt(1, Integer.parseInt(productOrder.getOrderId()));
+                    ps.setInt(2, Integer.parseInt(productOrder.getProductId()));
+                    ps.setInt(3, productOrder.getOrderedQuantity());
                     System.out.println(ps);
                     rs = ps.executeQuery();
                     break;
@@ -72,17 +80,18 @@ public class DatabaseManager {
                     ps.setString(8, customer.getNotes());
                     System.out.println(ps);
                     rs = ps.executeQuery();
-                    // Extract data from result set
-                    rsmd = rs.getMetaData();
-                    while (rs.next()) {
-                        int columnsNumber = rsmd.getColumnCount();
-                        for (int i = 1; i <= columnsNumber; i++) {
-                            if (i > 1) System.out.print(",  ");
-                            String columnValue = rs.getString(i);
-                            System.out.print(columnValue + " " + rsmd.getColumnName(i));
-                        }
-                        System.out.println("");
-                    }
+                    break;
+            }
+            // Extract data from result set
+            rsmd = rs.getMetaData();
+            while (rs.next()) {
+                int columnsNumber = rsmd.getColumnCount();
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1) System.out.print(",  ");
+                    String columnValue = rs.getString(i);
+                    System.out.print(columnValue + " " + rsmd.getColumnName(i));
+                }
+                System.out.println("");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -175,6 +184,14 @@ public class DatabaseManager {
                     ps.setInt(1, id);
                     ps.executeQuery();
                     System.out.println("Customer is deactivated!");
+                    break;
+                case SQLQueries.UPDATE_PRODUCT_ORDER:
+                    ProductOrder productOrder = (ProductOrder) object;
+                    ps = conn.prepareStatement(SQLQueries.UPDATE_PRODUCT_ORDER);
+                    ps.setInt(1, productOrder.getOrderedQuantity());
+                    ps.setInt(2, id);
+                    ps.executeQuery();
+                    System.out.println("Order is updated!");
                     break;
             }
         } catch (SQLException e) {

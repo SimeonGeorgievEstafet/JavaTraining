@@ -1,18 +1,24 @@
 package Test;
 
+import Dao.OrderDao;
 import Helpers.OrderHelper;
 import POJO.Order;
 
+import java.util.List;
+
 public class OrdersTest {
     public static void main(String[] args) {
-        OrderHelper oh = new OrderHelper();
-        oh.getByID(28);
+        OrderDao orderDao = new OrderDao();
+        Order order = orderDao.getByID(28);
+        orderDao.getByID(1010);
 
-        Order order = oh.CreateOrder();
-        oh.save(order);
+        Order order2 = new OrderHelper().CreateOrder();
+        orderDao.save(order2);
 
-        oh.delete(28);
-        oh.update(14);
+        orderDao.delete(28);
+        orderDao.update(14);
+        orderDao.getProductOrdersByOrderId(1065);
 
+        List<Order> orderList = new OrderHelper().CreateOrders(3);
     }
 }
