@@ -8,7 +8,6 @@ import org.apache.commons.dbutils.ResultSetHandler;
 
 import java.sql.*;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class will handle basic CRUD operations.

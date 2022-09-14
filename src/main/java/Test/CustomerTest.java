@@ -1,8 +1,6 @@
 package Test;
 
 import Dao.CustomerDao;
-import Helpers.CustomerHelper;
-import POJO.Customer;
 
 public class CustomerTest {
     public static void main(String[] args) {

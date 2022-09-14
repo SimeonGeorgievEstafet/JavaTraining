@@ -45,7 +45,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
      * delete() will delete a customer by given customerId
      */
     public void deleteAll(String database) {
-        executeQuery(String.format(DELETE_ALL_USERS,database));
+        executeQuery(String.format(DELETE_ALL_USERS, database));
     }
 
     /**
