@@ -1,8 +1,10 @@
 package Helpers;
 
+import java.util.List;
+
 public interface ObjectCreator<T> {
 
-    void CreateObject();
+    T CreateObject();
 
-    void CreateObjects(int i);
+    List<T> CreateObjects(int i);
 }

@@ -1,13 +1,12 @@
 package Helpers;
 
 import POJO.Customer;
-import POJO.Order;
 import com.github.javafaker.Faker;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerHelper {
+public class CustomerHelper implements ObjectCreator<Customer>{
 
     Faker faker = new Faker();
 
@@ -15,7 +14,7 @@ public class CustomerHelper {
      * CreateCustomer method will user Faker to create valid data for customer.
      * The data will be printed and returned as Customer object.
      */
-    public Customer CreateCustomer() {
+    public Customer CreateObject() {
         Customer customer = Customer.builder()
                 .name(faker.name().name())
                 .email(faker.internet().emailAddress())
@@ -33,10 +32,10 @@ public class CustomerHelper {
     /**
      * CreateCustomer method will user Faker to create valid list of customers.
      */
-    public List<Customer> CreateCustomers(int numberOfCustomers) {
+    public List<Customer> CreateObjects(int numberOfCustomers) {
         List<Customer> customerList = new ArrayList<>();
         for (int i = 0; i < numberOfCustomers; i++) {
-            customerList.add(CreateCustomer());
+            customerList.add(CreateObject());
         }
         System.out.println(customerList);
         return customerList;

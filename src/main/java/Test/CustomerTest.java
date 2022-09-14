@@ -1,11 +1,8 @@
 package Test;
 
 import Dao.CustomerDao;
-import Helpers.CustomerAddressHelper;
 import Helpers.CustomerHelper;
-import Helpers.ProductsHelper;
 import POJO.Customer;
-import POJO.Product;
 
 import java.util.List;
 
@@ -14,10 +11,10 @@ public class CustomerTest {
 
         final String ACTIVATE = "activate";
         final String DEACTIVATE = "deactivate";
-        Customer customer = new CustomerHelper().CreateCustomer();
+        Customer customer = new CustomerHelper().CreateObject();
         CustomerDao customerDao = new CustomerDao();
 
-        List<Customer> customerList = new CustomerHelper().CreateCustomers(6);
+        List<Customer> customerList = new CustomerHelper().CreateObjects(6);
         customerDao.getCustomerAddress(13);
         customerDao.getCustomerOrders(2);
 
@@ -32,7 +29,7 @@ public class CustomerTest {
 
 //        Create 15 customers!
         for (int i = 0; i < 100; i++) {
-            Customer customer2 = new CustomerHelper().CreateCustomer();
+            Customer customer2 = new CustomerHelper().CreateObject();
             customerDao.save(customer2);
         }
 
