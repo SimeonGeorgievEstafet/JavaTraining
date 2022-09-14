@@ -1,13 +1,12 @@
 package Helpers;
 
-import Databases.DatabaseManager;
 import POJO.ProductOrder;
 import com.github.javafaker.Faker;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductsOrderHelper {
+public class ProductsOrderHelper implements ObjectCreator<ProductOrder> {
 
     Faker faker = new Faker();
 
@@ -15,7 +14,7 @@ public class ProductsOrderHelper {
      * CreateProduct method will user Faker to create valid data forProductOrders.
      * The data will be printed and returned as Product object.
      */
-    public ProductOrder CreateProductOrder() {
+    public ProductOrder CreateObject() {
         ProductOrder productOrder = ProductOrder.builder()
                 .orderId(String.valueOf(faker.random().nextInt(1021, 1104)))
                 .productId(String.valueOf(faker.random().nextInt(19, 120)))
@@ -42,15 +41,10 @@ public class ProductsOrderHelper {
     /**
      * CreateProductOrders method will user Faker to create valid list of ProductOrders.
      */
-    public List<ProductOrder> CreateProductOrders(int numberOfProductOrders) {
+    public List<ProductOrder> CreateObjects(int numberOfProductOrders) {
         List<ProductOrder> productOrderList = new ArrayList<>();
         for (int i = 0; i < numberOfProductOrders; i++) {
-            ProductOrder productOrder = ProductOrder.builder()
-                    .orderId(String.valueOf(faker.random().nextInt(1021, 1104)))
-                    .productId(String.valueOf(faker.random().nextInt(19, 120)))
-                    .orderedQuantity(faker.random().nextInt(1, 100))
-                    .build();
-            productOrderList.add(productOrder);
+            productOrderList.add(CreateObject());
         }
         System.out.println(productOrderList);
         return productOrderList;

@@ -1,14 +1,12 @@
 package Helpers;
 
-import Databases.DatabaseManager;
 import POJO.Order;
-import POJO.ProductOrder;
 import com.github.javafaker.Faker;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderHelper {
+public class OrderHelper implements ObjectCreator<Order> {
 
     Faker faker = new Faker();
 
@@ -16,7 +14,7 @@ public class OrderHelper {
      * CreateOrder method will user Faker to create valid data for Order.
      * The data will be printed and returned as Order object.
      */
-    public Order CreateOrder() {
+    public Order CreateObject() {
         Order order = Order.builder()
                 .customerId(faker.random().nextInt(1001,1119))
                 .isOrderCompleted(Boolean.FALSE)
@@ -29,15 +27,10 @@ public class OrderHelper {
     /**
      * CreateOrders method will user Faker to create valid list of Orders.
      */
-    public List<Order> CreateOrders(int numberOfOrders) {
+    public List<Order> CreateObjects(int numberOfOrders) {
         List<Order> orderList = new ArrayList<>();
         for (int i = 0; i < numberOfOrders; i++) {
-            Order order = Order.builder()
-                    .customerId(faker.random().nextInt(1001, 1119))
-                    .isOrderCompleted(Boolean.FALSE)
-                    .isOrderPaid(faker.random().nextBoolean())
-                    .build();
-            orderList.add(order);
+            orderList.add(CreateObject());
         }
         System.out.println(orderList);
         return orderList;

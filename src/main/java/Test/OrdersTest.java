@@ -12,13 +12,13 @@ public class OrdersTest {
         Order order = orderDao.getByID(28);
         orderDao.getByID(1010);
 
-        Order order2 = new OrderHelper().CreateOrder();
+        Order order2 = new OrderHelper().CreateObject();
         orderDao.save(order2);
 
         orderDao.delete(28);
         orderDao.update(14);
         orderDao.getProductOrdersByOrderId(1065);
 
-        List<Order> orderList = new OrderHelper().CreateOrders(3);
+        List<Order> orderList = new OrderHelper().CreateObjects(3);
     }
 }
