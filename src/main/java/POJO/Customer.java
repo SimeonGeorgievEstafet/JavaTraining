@@ -63,7 +63,6 @@ public class Customer implements Serializable {
 
     List<Order> order;
 
-    @Override
     public String toString() {
         return ("'" + name + "','" +
                 email + "','" +

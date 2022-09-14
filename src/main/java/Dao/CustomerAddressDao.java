@@ -19,6 +19,10 @@ public class CustomerAddressDao implements CrudDao<CustomerAddress> {
         dbm.save(object, SQLQueries.SAVE_CUSTOMER_ADDRESS);
     }
 
+    @Override
+    public void deleteAll(String database) {
+    }
+
     /**
      * getById() method will get customer by id
      * and map it to CustomerAddress.Class using DbUtils with custom handler.

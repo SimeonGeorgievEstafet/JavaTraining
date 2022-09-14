@@ -38,6 +38,11 @@ public class ProductsDao implements CrudDao<Product> {
         dbm.delete(id, SQLQueries.DELETE_PRODUCT);
     }
 
+    @Override
+    public void deleteAll(String database) {
+
+    }
+
     /**
      * Method update() will update Product by id.
      */

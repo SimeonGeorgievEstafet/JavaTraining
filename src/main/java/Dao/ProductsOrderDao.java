@@ -36,6 +36,11 @@ public class ProductsOrderDao implements CrudDao<ProductOrder> {
         dbm.delete(id, SQLQueries.DELETE_PRODUCT_ORDER);
     }
 
+    @Override
+    public void deleteAll(String database) {
+
+    }
+
     /**
      * Method update() will activate or deactivate customer by given customerId.
      */
