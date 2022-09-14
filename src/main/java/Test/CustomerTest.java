@@ -1,17 +1,13 @@
 package Test;
 
 import Dao.CustomerDao;
-import Helpers.CustomerHelper;
-import POJO.Customer;
-
-import java.util.List;
 
 public class CustomerTest {
     public static void main(String[] args) {
 
 //        final String ACTIVATE = "activate";
 //        final String DEACTIVATE = "deactivate";
-        Customer customer = new CustomerHelper().CreateObject();
+//        Customer customer = new CustomerHelper().CreateObject();
         CustomerDao customerDao = new CustomerDao();
 //
 //        List<Customer> customerList = new CustomerHelper().CreateObjects(6);
@@ -22,10 +18,10 @@ public class CustomerTest {
 //        customerDao.getRandomId();
 //
 ////        save new customer
-        customerDao.save(customer);
+//        customerDao.save(customer);
 //
 //////        delete all customers
-////        customerDao.deleteAll();
+        customerDao.deleteAll("customers_1");
 //
 ////        Create 15 customers!
 //        for (int i = 0; i < 100; i++) {
@@ -41,7 +37,8 @@ public class CustomerTest {
 //        customerDao.update(ACTIVATE, 6);
 //
 ////        Delete customer by ID
-//        customerDao.delete(1001);
+//        customerDao.delete(1222);
+//        customerDao.deleteAll();
 //
 ////        Get many random customerIDs
 //        customerDao.getRandomIds(5);

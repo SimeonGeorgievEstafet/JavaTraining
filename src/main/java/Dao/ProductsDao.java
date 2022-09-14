@@ -27,7 +27,7 @@ public class ProductsDao implements CrudDao<Product> {
      */
     @Override
     public Product getByID(int id) {
-        return (Product) dbm.getByID(id,SQLQueries.GET_PRODUCT_BY_ID,new ProductHandler());
+        return (Product) dbm.getByID(id, SQLQueries.GET_PRODUCT_BY_ID, new ProductHandler());
     }
 
     /**
@@ -35,13 +35,13 @@ public class ProductsDao implements CrudDao<Product> {
      */
     @Override
     public void delete(int id) {
-        dbm.delete(id,SQLQueries.DELETE_PRODUCT);
+        dbm.delete(id, SQLQueries.DELETE_PRODUCT);
     }
 
     /**
      * Method update() will update Product by id.
      */
     public void update(Product product, int productId) {
-        dbm.update(product,SQLQueries.UPDATE_PRODUCT,productId);
+        dbm.update(product, SQLQueries.UPDATE_PRODUCT, productId);
     }
 }

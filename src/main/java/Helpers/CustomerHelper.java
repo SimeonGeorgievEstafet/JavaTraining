@@ -6,7 +6,7 @@ import com.github.javafaker.Faker;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerHelper implements ObjectCreator<Customer>{
+public class CustomerHelper implements ObjectCreator<Customer> {
 
     Faker faker = new Faker();
 

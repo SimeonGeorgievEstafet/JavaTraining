@@ -10,10 +10,6 @@ import java.util.Properties;
 public class PropertiesHelper {
 
     private static final String FILE_PATH = "src/main/resources/config.properties";
-    private final String dbUrl;
-    private final String dbUser;
-    private final String dbPassword;
-
     private static final PropertiesHelper propertiesHelper;
 
     static {
@@ -23,6 +19,10 @@ public class PropertiesHelper {
             throw new RuntimeException(e);
         }
     }
+
+    private final String dbUrl;
+    private final String dbUser;
+    private final String dbPassword;
 
     private PropertiesHelper() throws IOException {
         Properties properties = new Properties();

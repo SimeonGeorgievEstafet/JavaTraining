@@ -1,7 +1,5 @@
 package Databases.DatabaseSingleton;
 
-import Databases.DatabaseFactory.DatabaseFactoryHelper;
-
 import java.sql.*;
 
 public class TestSingletonMethod {

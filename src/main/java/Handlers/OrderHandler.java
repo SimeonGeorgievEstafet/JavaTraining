@@ -17,10 +17,6 @@ public class OrderHandler extends BeanListHandler<Order> {
         super(Order.class, new BasicRowProcessor(new BeanProcessor(mapColumnsToFields())));
     }
 
-    public List<Order> handle(ResultSet rs) throws SQLException {
-        return super.handle(rs);
-    }
-
     public static Map<String, String> mapColumnsToFields() {
         Map<String, String> columnsToFieldsMap = new HashMap<>();
         columnsToFieldsMap.put("order_id", "orderId");
@@ -30,5 +26,9 @@ public class OrderHandler extends BeanListHandler<Order> {
         columnsToFieldsMap.put("date_of_order", "dateOfOrder");
         columnsToFieldsMap.put("date_of_order_completed", "dateOfOrderCompleted");
         return columnsToFieldsMap;
+    }
+
+    public List<Order> handle(ResultSet rs) throws SQLException {
+        return super.handle(rs);
     }
 }

@@ -60,10 +60,10 @@ public interface SQLQueries {
             "returning *;";
 
     String DELETE_CUSTOMER = "DELETE FROM customers \n" +
-            "WHERE customer_id = ?\n" +
+            "WHERE customer_id = %s\n" +
             "returning *;";
 
-    String DELETE_ALL_USERS = "TRUNCATE TABLE customers";
+    String DELETE_ALL_USERS = "TRUNCATE TABLE %s CASCADE";
 
     String GET_RANDOM_IDS = "select\n" +
             "\tarray(\n" +
@@ -86,7 +86,7 @@ public interface SQLQueries {
             "from\n" +
             "\tcustomers\n" +
             "where\n" +
-            "\tcustomer_id = ?";
+            "\tcustomer_id = %s";
 
 
     String GET_CUSTOMER_BY_IDS = "select\n" +

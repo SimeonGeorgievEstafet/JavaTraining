@@ -1,7 +1,5 @@
 package Dao;
 
-import POJO.Product;
-
 public interface CrudDao<T> {
 
     void save(T object);
@@ -9,5 +7,7 @@ public interface CrudDao<T> {
     T getByID(int id);
 
     void delete(int id);
+
+//    void deleteAll();
 
 }
