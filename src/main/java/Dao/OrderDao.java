@@ -14,7 +14,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderDao implements CrudDao<Order> {
+import static Databases.DatabaseManager.executeQuery;
+
+public class OrderDao implements CrudDao<Order>,SQLQueries {
 
     DatabaseManager dbm = new DatabaseManager();
 
@@ -76,4 +78,12 @@ public class OrderDao implements CrudDao<Order> {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void getRecordsCount() {
+        executeQuery(String.format(GET_RECORD_COUNT, "orders"));
+    }
+
+    ;
+
 }

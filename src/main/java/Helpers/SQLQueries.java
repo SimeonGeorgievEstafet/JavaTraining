@@ -3,7 +3,7 @@ package Helpers;
 public interface SQLQueries {
 
     String GET_RANDOM_CUSTOMER = "select\n" +
-            "\tcustomer_id\n" +
+            "\tid\n" +
             "from\n" +
             "\tcustomers\n" +
             "order by\n" +
@@ -23,19 +23,6 @@ public interface SQLQueries {
             "\tnotes)\n" +
             "values (%s) RETURNING *;";
 
-//    String SAVE_CUSTOMER = "insert\n" +
-//            "\tinto\n" +
-//            "\tcustomers (\n" +
-//            "\tname,\n" +
-//            "\temail,\n" +
-//            "\tphone,\n" +
-//            "\tage,\n" +
-//            "\tgdpr,\n" +
-//            "\tcustomer_profile_status,\n" +
-//            "\treason,\n" +
-//            "\tnotes)\n" +
-//            "values (?,?,?,?,?,?,?,?)RETURNING *;";
-
     String DEACTIVATE_CUSTOMER = "update\n" +
             "\tcustomers\n" +
             "set\n" +
@@ -44,7 +31,7 @@ public interface SQLQueries {
             "\treason = 'reason for deactivation',\n" +
             "\tnotes = 'some long note here'\n" +
             "where\n" +
-            "customer_id = ?" +
+            "id = ?" +
             "returning *;";
 
     String ACTIVATE_CUSTOMER = "update\n" +
@@ -56,19 +43,20 @@ public interface SQLQueries {
             "\tnotes = 'some note for activating the customer',\n" +
             "\treason = null\n" +
             "where\n" +
-            "\tcustomer_id = ?" +
+            "\tid = ?" +
             "returning *;";
 
     String DELETE_CUSTOMER = "DELETE FROM customers \n" +
-            "WHERE customer_id = %s\n" +
+            "WHERE id = %s\n" +
             "returning *;";
 
-    String DELETE_ALL_USERS = "TRUNCATE TABLE %s CASCADE";
+    String DELETE_ALL_CUSTOMERS = "DELETE FROM %s WHERE id is not null";
+            ;
 
     String GET_RANDOM_IDS = "select\n" +
             "\tarray(\n" +
             "\tselect\n" +
-            "\t\tcustomer_id\n" +
+            "\t\tid\n" +
             "\tfrom\n" +
             "\t\tcustomers\n" +
             "\torder by\n" +
@@ -79,14 +67,14 @@ public interface SQLQueries {
     String GET_RECORD_COUNT = "SELECT \n" +
             "   COUNT(*) \n" +
             "FROM \n" +
-            "   customers";
+            "%s" ;
 
     String GET_CUSTOMER_BY_ID = "select\n" +
             "\t*\n" +
             "from\n" +
             "\tcustomers\n" +
             "where\n" +
-            "\tcustomer_id = %s";
+            "\tid = %s";
 
 
     String GET_CUSTOMER_BY_IDS = "select\n" +
@@ -94,7 +82,7 @@ public interface SQLQueries {
             "from\n" +
             "\tcustomers\n" +
             "where\n" +
-            "\tcustomer_id in (?)";
+            "\tid in (?)";
 
     String SAVE_CUSTOMER_ADDRESS = "insert\n" +
             "\tinto\n" +
@@ -112,10 +100,10 @@ public interface SQLQueries {
             "from\n" +
             "\tcustomer_addresses\n" +
             "where\n" +
-            "\tcustomer_address_id in (?)";
+            "\tid in (?)";
 
     String DELETE_CUSTOMER_ADDRESS = "DELETE FROM customer_addresses \n" +
-            "WHERE customer_address_id = ?\n" +
+            "WHERE id = ?\n" +
             "returning *;";
 
     String UPDATE_CUSTOMER_ADDRESS = "update\n" +
@@ -128,7 +116,7 @@ public interface SQLQueries {
             "\tpostal_code  = ?,\n" +
             "\tcountry  = ?\n" +
             "where\n" +
-            "\tcustomer_address_id = ?\n" +
+            "\tid = ?\n" +
             "returning *;";
 
     String SAVE_PRODUCT = "insert\n" +
@@ -148,10 +136,10 @@ public interface SQLQueries {
             "from\n" +
             "\tproducts_inventory\n" +
             "where\n" +
-            "\tproduct_id in (?)";
+            "\tid in (?)";
 
     String DELETE_PRODUCT = "DELETE FROM products_inventory \n" +
-            "WHERE product_id = ?\n" +
+            "WHERE id = ?\n" +
             "returning *;";
 
     String UPDATE_PRODUCT = "update\n" +
@@ -165,7 +153,7 @@ public interface SQLQueries {
             "\tin_stock  = ?,\n" +
             "\tsupplier  = ?\n" +
             "where\n" +
-            "\tproduct_id = ?\n" +
+            "\tid = ?\n" +
             "returning *;";
 
     String SAVE_ORDER = "insert\n" +
@@ -182,10 +170,10 @@ public interface SQLQueries {
             "from\n" +
             "\torders\n" +
             "where\n" +
-            "\torder_id in (?)";
+            "\tid in (?)";
 
     String DELETE_ORDER = "DELETE FROM orders \n" +
-            "WHERE order_id = ?\n" +
+            "WHERE id = ?\n" +
             "returning *;";
 
     String GET_ALL_CUSTOMER_ORDERS = "select\n" +
@@ -193,7 +181,7 @@ public interface SQLQueries {
             "from\n" +
             "\torders\n" +
             "where\n" +
-            "\tcustomer_id in (?)";
+            "\tid in (?)";
 
     String UPDATE_ORDER = "update\n" +
             "\torders\n" +
@@ -202,7 +190,7 @@ public interface SQLQueries {
             "\tis_order_paid = true,\n" +
             "\tdate_of_order_completed = now()\n" +
             "where\n" +
-            "\torder_id in(?)\n" +
+            "\tid in(?)\n" +
             "returning *;";
 
     String SAVE_PRODUCT_ORDER = "insert\n" +
@@ -218,10 +206,10 @@ public interface SQLQueries {
             "from\n" +
             "\tproduct_orders\n" +
             "where\n" +
-            "\tproduct_order_id in (?)";
+            "\tid in (?)";
 
     String DELETE_PRODUCT_ORDER = "DELETE FROM product_orders \n" +
-            "WHERE product_order_id = ?\n" +
+            "WHERE id = ?\n" +
             "returning *;";
 
     String UPDATE_PRODUCT_ORDER = "update\n" +
@@ -229,7 +217,7 @@ public interface SQLQueries {
             "set\n" +
             "\tordered_quantity  = ? \n" +
             "where\n" +
-            "\tproduct_order_id = ?\n" +
+            "\tid = ?\n" +
             "returning *;";
 
     String GET_PRODUCT_ORDER_BY_ORDER_ID = "select\n" +

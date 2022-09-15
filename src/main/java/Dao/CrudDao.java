@@ -10,4 +10,5 @@ public interface CrudDao<T> {
 
     void delete(int id);
 
+    void getRecordsCount();
 }

@@ -11,7 +11,6 @@ import POJO.Customer;
 import POJO.CustomerAddress;
 import POJO.Order;
 import org.apache.commons.dbutils.QueryRunner;
-
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
@@ -41,12 +40,15 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         executeQuery(String.format(DELETE_CUSTOMER, customerId));
     }
 
+
+
     /**
      * deleteAll() will truncate a table by given table name
      */
     @Override
     public void deleteAll(String database) {
-        executeQuery(String.format(DELETE_ALL_USERS, database));
+        //Delete not null from DB
+        executeUpdate(String.format(DELETE_ALL_CUSTOMERS, database));
     }
 
     /**
@@ -156,27 +158,9 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         return customersList;
     }
 
-
-    /**
-     * getRecordsCount will return the total count of all customers.
-     */
-    public int getRecordsCount() {
-        int CustomerId = 0;
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(SQLQueries.GET_RECORD_COUNT);
-            try {
-                if (rs.next()) {
-                    CustomerId = Integer.parseInt(rs.getString(1));
-                    System.out.println(CustomerId);
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return CustomerId;
+    @Override
+    public void getRecordsCount() {
+        executeQuery(String.format(GET_RECORD_COUNT, "customers"));
     }
 
 
