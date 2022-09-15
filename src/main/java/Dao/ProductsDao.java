@@ -5,7 +5,9 @@ import Handlers.ProductHandler;
 import Helpers.SQLQueries;
 import POJO.Product;
 
-public class ProductsDao implements CrudDao<Product> {
+import static Databases.DatabaseManager.executeQuery;
+
+public class ProductsDao implements CrudDao<Product>,SQLQueries {
 
     DatabaseManager dbm = new DatabaseManager();
 
@@ -48,5 +50,10 @@ public class ProductsDao implements CrudDao<Product> {
      */
     public void update(Product product, int productId) {
         dbm.update(product, SQLQueries.UPDATE_PRODUCT, productId);
+    }
+
+    @Override
+    public void getRecordsCount() {
+        executeQuery(String.format(GET_RECORD_COUNT, "products"));
     }
 }

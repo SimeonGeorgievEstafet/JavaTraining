@@ -1,4 +1,6 @@
-package Databases.DatabaseSingleton;
+package Test.DbTest;
+
+import Databases.DatabaseSingleton.DatabaseSingletonHelper;
 
 import java.sql.*;
 

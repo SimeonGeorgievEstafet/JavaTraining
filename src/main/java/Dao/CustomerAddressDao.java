@@ -5,7 +5,9 @@ import Handlers.CustomerAddressHandler;
 import Helpers.SQLQueries;
 import POJO.CustomerAddress;
 
-public class CustomerAddressDao implements CrudDao<CustomerAddress> {
+import static Databases.DatabaseManager.executeQuery;
+
+public class CustomerAddressDao implements CrudDao<CustomerAddress>,SQLQueries {
     DatabaseManager dbm = new DatabaseManager();
 
 
@@ -46,5 +48,10 @@ public class CustomerAddressDao implements CrudDao<CustomerAddress> {
      */
     public void update(CustomerAddress customerAddress, int customerAddressId) {
         dbm.update(customerAddress, SQLQueries.UPDATE_CUSTOMER_ADDRESS, customerAddressId);
+    }
+
+    @Override
+    public void getRecordsCount() {
+        executeQuery(String.format(GET_RECORD_COUNT, "customer_addresses"));
     }
 }

@@ -14,14 +14,29 @@ import java.util.List;
  */
 public class DatabaseManager {
 
-
     public static void executeQuery(String query) {
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
             PreparedStatement ps = conn.prepareStatement(query);
-            if (query.contains("TRUNCATE"))
-                ps.executeUpdate();
-            else
-                ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            while (rs.next()) {
+                int columnsNumber = rsmd.getColumnCount();
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1) System.out.print(",  ");
+                    String columnValue = rs.getString(i);
+                    System.out.print(columnValue + " " + rsmd.getColumnName(i));
+                }
+                System.out.println("");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void executeUpdate(String query) {
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -129,26 +144,6 @@ public class DatabaseManager {
         }
     }
 
-//    /**
-//     * getByID() method will return Object(Customer,Order,CustomerAddress,Product) by,
-//     * required id, query and ObjectHandler(ProductHandler,OrderHandler...)
-//     */
-//    public Object getByID(int id, String query, Object object) {
-//        List<Object> objectList;
-//        QueryRunner queryRunner = new QueryRunner();
-//        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-//            try {
-//                objectList = queryRunner.query(conn, query, (ResultSetHandler<? extends List<Object>>) object, id);
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
-//            }
-//            System.out.println(objectList.get(0));
-//            return objectList.get(0);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     /**
      * Method delete() will delete record in the db by id and query.
      */
@@ -225,6 +220,21 @@ public class DatabaseManager {
                     System.out.println("Order is updated!");
                     break;
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Method delete() will delete record in the db by id and query.
+     */
+    public void getRecordsCount(String query) {
+        String count;
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, query);
+            ResultSet rs = ps.executeQuery();
+            System.out.println(rs.getString(0));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -1,4 +1,6 @@
-package Databases.DatabaseFactory;
+package Test.DbTest;
+
+import Databases.DatabaseFactory.DatabaseFactoryHelper;
 
 import java.sql.*;
 

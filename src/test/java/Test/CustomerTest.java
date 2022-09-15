@@ -9,7 +9,7 @@ public class CustomerTest {
 //        final String DEACTIVATE = "deactivate";
 //        Customer customer = new CustomerHelper().CreateObject();
         CustomerDao customerDao = new CustomerDao();
-//
+//          customerDao.getRecordsCount();
 //        List<Customer> customerList = new CustomerHelper().CreateObjects(6);
 //        customerDao.getCustomerAddress(13);
 //        customerDao.getCustomerOrders(2);
