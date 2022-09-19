@@ -1,5 +1,6 @@
 package Helpers;
 
+import POJO.Customer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import org.apache.commons.beanutils.BeanUtils;
@@ -68,5 +69,49 @@ public class ResultSetMapper<T> {
         }
         return outputList;
     }
+
+    public int mapResultSetToInt(ResultSet resultSet) {
+        int result = -1;
+        try {
+            if (resultSet.next())
+                result = resultSet.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public List<Integer> mapResultSetToList(ResultSet resultSet) {
+        List<Integer> result = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                result.add(id);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    /**
+     * This method will map ResultSet to a Customer object
+     */
+    public Customer mapResultSetToCustomer(ResultSet rs) throws SQLException {
+        return Customer.builder().
+                id(rs.getString("id"))
+                .name(rs.getString("name"))
+                .email(rs.getString("email"))
+                .phone(rs.getString("phone"))
+                .age(rs.getInt("age"))
+                .gdpr(rs.getBoolean("gdpr"))
+                .customerProfileStatus(rs.getBoolean("customer_profile_status"))
+                .deactivationDate(rs.getDate("deactivation_date"))
+                .reason(rs.getString("reason"))
+                .notes(rs.getString("notes"))
+                .activationDate(rs.getDate("activation_date"))
+                .build();
+    }
+
 }
 

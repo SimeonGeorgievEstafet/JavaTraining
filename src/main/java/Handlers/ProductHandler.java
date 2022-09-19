@@ -18,7 +18,6 @@ public class ProductHandler extends BeanListHandler<Product> {
 
     public static Map<String, String> mapColumnsToFields() {
         Map<String, String> columnsToFieldsMap = new HashMap<>();
-        columnsToFieldsMap.put("product_id", "productId");
         columnsToFieldsMap.put("product_name", "productName");
         columnsToFieldsMap.put("available_quantity", "availableQuantity");
         columnsToFieldsMap.put("product_type", "productType");

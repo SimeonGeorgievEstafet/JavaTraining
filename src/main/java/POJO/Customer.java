@@ -23,8 +23,8 @@ import java.util.List;
 public class Customer implements Serializable {
 
     @Id
-    @Column(name = "customer_id", nullable = false)
-    String customerId;
+    @Column(name = "id", nullable = false)
+    String id;
 
     @Column(name = "deactivation_date")
     Date deactivationDate;

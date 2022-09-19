@@ -20,7 +20,6 @@ public class ProductOrderHandler extends BeanListHandler<ProductOrder> {
 
     public static Map<String, String> mapColumnsToFields() {
         Map<String, String> columnsToFieldsMap = new HashMap<>();
-        columnsToFieldsMap.put("product_order_id", "productOrderId");
         columnsToFieldsMap.put("product_id", "productId");
         columnsToFieldsMap.put("order_id", "orderId");
         columnsToFieldsMap.put("ordered_quantity", "orderedQuantity");

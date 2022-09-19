@@ -8,5 +8,13 @@ public interface SQLQueries {
 
     String DELETE_ALL_RECORDS = "delete from %s where id is not null";
 
+    String GET_RANDOM_ID = "select id from %s order by random() limit 1";
+
+    String GET_RANDOM_IDS = "select id from %s order by random() limit %s";
+
+    String GET_BY_ID = "select * from %s where id = %s";
+
+    String GET_BY_IDS = "select * from %s where id in (%s)";
+
 
 }
