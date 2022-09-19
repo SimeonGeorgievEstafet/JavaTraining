@@ -43,4 +43,11 @@ public class Order implements Serializable {
 
     List<ProductOrder> productOrders;
 
+    public String toQuery() {
+        return ("'" + customerId + "','" +
+                isOrderCompleted + "','" +
+                isOrderPaid + "'");
+    }
+
+
 }

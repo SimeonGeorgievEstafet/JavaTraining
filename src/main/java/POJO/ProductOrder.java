@@ -19,8 +19,8 @@ import java.io.Serializable;
 public class ProductOrder implements Serializable {
 
     @Id
-    @Column(name = "product_order_id", nullable = false)
-    String productOrderId;
+    @Column(name = "id", nullable = false)
+    String id;
 
     @NotNull
     @Column(name = "order_id")
@@ -35,4 +35,15 @@ public class ProductOrder implements Serializable {
 
 //    Product product;
 
+    public String toQuery() {
+        return ("'" + orderId + "','" +
+                productId + "','" +
+                orderedQuantity + "'");
+    }
+
+    public String toString() {
+        return "order_id='" + orderId + '\'' +
+               ", product_id='" + productId + '\'' +
+               ", ordered_quantity=" + orderedQuantity;
+    }
 }

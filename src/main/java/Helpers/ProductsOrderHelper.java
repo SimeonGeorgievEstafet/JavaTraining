@@ -27,10 +27,10 @@ public class ProductsOrderHelper implements ObjectCreator<ProductOrder> {
     /**
      * CreateProductOrder method will use user data to create ProductOrders.
      */
-    public ProductOrder CreateProductOrder(int a, int b, int c) {
+    public ProductOrder CreateProductOrder(int orderId, int productId) {
         ProductOrder productorder = ProductOrder.builder()
-                .orderId(String.valueOf(a))
-                .productId(String.valueOf(b))
+                .orderId(String.valueOf(orderId))
+                .productId(String.valueOf(productId))
                 .orderedQuantity(faker.random().nextInt(1, 100))
                 .build();
         System.out.println(productorder);

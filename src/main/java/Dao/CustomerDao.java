@@ -4,20 +4,20 @@ import Databases.DatabaseManager;
 import Databases.DatabaseSingleton.DatabaseSingletonHelper;
 import Handlers.CustomerAddressHandler;
 import Handlers.CustomerHandler;
-import Handlers.OrderHandler;
 import Helpers.ResultSetMapper;
-import Helpers.SQLQueries;
+import Helpers.Queries.SQLCustomerQueries;
+import Helpers.Queries.SQLQueries;
 import POJO.Customer;
 import POJO.CustomerAddress;
-import POJO.Order;
 import org.apache.commons.dbutils.QueryRunner;
+
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, SQLQueries {
+public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, SQLCustomerQueries, SQLQueries {
 
     DatabaseManager dbm = new DatabaseManager();
 
@@ -29,7 +29,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
      */
     @Override
     public void save(Customer customer) {
-        executeQuery(String.format(SAVE_CUSTOMER, customer.toString()));
+        executeQuery(String.format(SAVE_CUSTOMER, customer.toQuery()));
     }
 
     /**
@@ -41,14 +41,12 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
     }
 
 
-
     /**
      * deleteAll() will truncate a table by given table name
      */
     @Override
-    public void deleteAll(String database) {
-        //Delete not null from DB
-        executeUpdate(String.format(DELETE_ALL_CUSTOMERS, database));
+    public void deleteAll() {
+        executeUpdate(String.format(DELETE_ALL_RECORDS, "customers_1"));
     }
 
     /**
@@ -56,9 +54,9 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
      */
     public void update(String status, int customerId) {
         if (Objects.equals(status, "activate")) {
-            dbm.update(new Customer(), SQLQueries.ACTIVATE_CUSTOMER, customerId);
+            executeQuery(String.format(ACTIVATE_CUSTOMER, customerId));
         } else {
-            dbm.update(new Customer(), SQLQueries.DEACTIVATE_CUSTOMER, customerId);
+            executeQuery(String.format(DEACTIVATE_CUSTOMER, customerId));
         }
     }
 //
@@ -67,7 +65,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
 //     */
 //    @Override
 //    public void delete(int customerId) {
-//        dbm.delete(customerId, SQLQueries.DELETE_CUSTOMER);
+//        dbm.delete(customerId, DELETE_CUSTOMER);
 //    }
 
     /**
@@ -77,7 +75,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         int CustomerId = 0;
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(SQLQueries.GET_RANDOM_CUSTOMER);
+            ResultSet rs = stmt.executeQuery(GET_RANDOM_CUSTOMER);
             try {
                 if (rs.next()) {
                     CustomerId = Integer.parseInt(rs.getString(1));
@@ -102,7 +100,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         Customer customer = null;
 
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            PreparedStatement ps = conn.prepareStatement(SQLQueries.GET_CUSTOMER_BY_ID);
+            PreparedStatement ps = conn.prepareStatement(GET_CUSTOMER_BY_ID);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             try {
@@ -132,7 +130,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
             StringBuilder builder = new StringBuilder();
             builder.append("?,".repeat(ids.size()));
             String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
-            String query = SQLQueries.GET_CUSTOMER_BY_IDS.replace("?", placeHolders);
+            String query = GET_CUSTOMER_BY_IDS.replace("?", placeHolders);
 
             //Put all the values in the Query
             PreparedStatement ps = conn.prepareStatement(query);
@@ -174,7 +172,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         ArrayList<Integer> customerIds = new ArrayList<>();
 
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            PreparedStatement ps = conn.prepareStatement(SQLQueries.GET_RANDOM_IDS);
+            PreparedStatement ps = conn.prepareStatement(GET_RANDOM_IDS);
             ps.setInt(1, j);
             ResultSet rs = ps.executeQuery();
             String result;
@@ -200,20 +198,6 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         return customerIds;
     }
 
-//    /**
-//     * This method will truncate the table customers_1
-//     */
-//    public void deleteAll() {
-//        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-//            Statement stmt = conn.createStatement();
-//            stmt.execute(SQLQueries.DELETE_ALL_USERS);
-//            System.out.println("Table customers_1 was deleted");
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-
     /**
      * This implementation is using ResultSetMapper instead of manually
      * mapping columns from the DB to the Customer object.
@@ -227,7 +211,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
             StringBuilder builder = new StringBuilder();
             builder.append("?,".repeat(ids.size()));
             String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
-            String query = SQLQueries.GET_CUSTOMER_BY_IDS.replace("?", placeHolders);
+            String query = GET_CUSTOMER_BY_IDS.replace("?", placeHolders);
 
             //Put all the values in the Query
             PreparedStatement ps = conn.prepareStatement(query);
@@ -256,7 +240,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         ResultSetMapper<Customer> resultSetMapper = new ResultSetMapper<Customer>();
 
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            PreparedStatement ps = conn.prepareStatement(SQLQueries.GET_CUSTOMER_BY_ID);
+            PreparedStatement ps = conn.prepareStatement(GET_CUSTOMER_BY_ID);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
@@ -279,7 +263,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         Customer customer = null;
 
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            PreparedStatement ps = conn.prepareStatement(SQLQueries.GET_CUSTOMER_BY_ID);
+            PreparedStatement ps = conn.prepareStatement(GET_CUSTOMER_BY_ID);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             try {
@@ -388,7 +372,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
      */
     public Customer getByIdDbUtils(int id) {
         CustomerHandler ch = new CustomerHandler();
-        return (Customer) dbm.getByID(id, SQLQueries.GET_CUSTOMER_BY_ID, ch);
+        return (Customer) dbm.getByID(id, GET_CUSTOMER_BY_ID, ch);
     }
 
 
@@ -407,7 +391,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
             StringBuilder builder = new StringBuilder();
             builder.append("?,".repeat(ids.size()));
             String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
-            String query = SQLQueries.GET_CUSTOMER_BY_IDS.replace("?", placeHolders);
+            String query = GET_CUSTOMER_BY_IDS.replace("?", placeHolders);
 
             //Put all the values in the Query
             PreparedStatement ps = conn.prepareStatement(query);
@@ -438,7 +422,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
 
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
             try {
-                customerAddressList = queryRunner.query(conn, SQLQueries.GET_CUSTOMER_ADDRESS_BY_ID, cah, id);
+                customerAddressList = queryRunner.query(conn, GET_CUSTOMER_ADDRESS_BY_ID, cah, id);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -449,25 +433,26 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         }
     }
 
-    /**
-     * getCustomerAddress() method will get customer address.
-     */
-    public List<Order> getCustomerOrders(int id) {
-        OrderHandler oh = new OrderHandler();
-        List<Order> orderList = new ArrayList<>();
-        QueryRunner queryRunner = new QueryRunner();
-
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            try {
-                orderList = queryRunner.query(conn, SQLQueries.GET_ALL_CUSTOMER_ORDERS, oh, id);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println(orderList);
-            return orderList;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    To be implemented
+//    /**
+//     * getCustomerAddress() method will get customer address.
+//     */
+//    public List<Order> getCustomerOrders(int id) {
+//        OrderHandler oh = new OrderHandler();
+//        List<Order> orderList = new ArrayList<>();
+//        QueryRunner queryRunner = new QueryRunner();
+//
+//        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+//            try {
+//                orderList = queryRunner.query(conn, GET_ALL_CUSTOMER_ORDERS, oh, id);
+//            } catch (SQLException e) {
+//                throw new RuntimeException(e);
+//            }
+//            System.out.println(orderList);
+//            return orderList;
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 }
 

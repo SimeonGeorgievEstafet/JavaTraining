@@ -47,4 +47,25 @@ public class Product implements Serializable {
 
     @Column(name = "supplier")
     int supplier;
+
+    public String toQuery() {
+        return ("'" + productName + "','" +
+                availableQuantity + "','" +
+                productType + "','" +
+                priceWithoutVat + "','" +
+                priceWithVat + "','" +
+                inStock + "','" +
+                supplier + "'");
+    }
+
+    @Override
+    public String toString() {
+        return "product_name='" + productName + '\'' +
+                ", available_quantity=" + availableQuantity +
+                ", product_type='" + productType + '\'' +
+                ", price_without_vat=" + priceWithoutVat +
+                ", price_with_vat=" + priceWithVat +
+                ", in_stock=" + inStock +
+                ", supplier=" + supplier;
+    }
 }
