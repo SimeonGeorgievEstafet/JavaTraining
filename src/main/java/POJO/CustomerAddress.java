@@ -19,8 +19,8 @@ import java.io.Serializable;
 public class CustomerAddress implements Serializable {
 
     @Id
-    @Column(name = "customer_address_id", nullable = false)
-    String customerAddressId;
+    @Column(name = "id", nullable = false)
+    String id;
 
     @NotNull
     @Column(name = "address")
@@ -45,5 +45,23 @@ public class CustomerAddress implements Serializable {
     @Column(name = "country")
     String country;
 
+    @Override
+    public String toString() {
+        return "address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", province='" + province + '\'' +
+                ", state='" + state + '\'' +
+                ", postal_code=" + postalCode +
+                ", country='" + country + '\'';
+    }
 
+    public String toQuery() {
+        return ("'" + address + "','" +
+                city + "','" +
+                province + "','" +
+                state + "','" +
+                postalCode + "','" +
+                country + "'");
+
+    }
 }

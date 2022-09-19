@@ -20,7 +20,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 
-public class Customer implements Serializable, PojoToQuery {
+public class Customer implements Serializable {
 
     @Id
     @Column(name = "customer_id", nullable = false)
@@ -63,7 +63,6 @@ public class Customer implements Serializable, PojoToQuery {
 
     List<Order> order;
 
-    @Override
     public String toQuery() {
         return ("'" + name + "','" +
                 email + "','" +

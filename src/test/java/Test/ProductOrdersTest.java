@@ -10,14 +10,14 @@ public class ProductOrdersTest {
     public static void main(String[] args) {
         ProductsOrderDao productsOrderDao = new ProductsOrderDao();
 
-        productsOrderDao.getRecordsCount();
+//        productsOrderDao.getRecordsCount();
 //        productsOrderDao.getByID(25);
 //
-//        ProductOrder productOrder = new ProductsOrderHelper().CreateObject();
-////        ProductOrder productOrder = new ProductsOrderHelper().CreateProductOrder(2,4,5);
-//
+        ProductOrder productOrder = new ProductsOrderHelper().CreateObject();
+//        ProductOrder productOrder = new ProductsOrderHelper().CreateProductOrder(2,4);
+////
 //        productsOrderDao.save(productOrder);
-//
+////
 //        productsOrderDao.delete(4);
 //
 //        /*
@@ -28,8 +28,8 @@ public class ProductOrdersTest {
 //         */
 //        ProductOrder productOrder2 = productsOrderDao.getByID(14);
 //        productOrder2.setOrderedQuantity(144);
-//        productsOrderDao.update(productOrder, 14);
-//
+//        productsOrderDao.update(productOrder, 177);
+            productsOrderDao.deleteAll();
 //        for (int i = 0; i < 100; i++) {
 //            ProductOrder product2 = new ProductsOrderHelper().CreateObject();
 //            productsOrderDao.save(product2);

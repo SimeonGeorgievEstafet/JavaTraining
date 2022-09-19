@@ -2,12 +2,14 @@ package Dao;
 
 import Databases.DatabaseManager;
 import Handlers.ProductOrderHandler;
-import Helpers.SQLQueries;
+import Helpers.Queries.SQLProductOrdersQueries;
+import Helpers.Queries.SQLQueries;
 import POJO.ProductOrder;
 
 import static Databases.DatabaseManager.executeQuery;
+import static Databases.DatabaseManager.executeUpdate;
 
-public class ProductsOrderDao implements CrudDao<ProductOrder>,SQLQueries {
+public class ProductsOrderDao implements CrudDao<ProductOrder>, SQLProductOrdersQueries, SQLQueries {
 
     DatabaseManager dbm = new DatabaseManager();
 
@@ -17,8 +19,8 @@ public class ProductsOrderDao implements CrudDao<ProductOrder>,SQLQueries {
      * will be executed and product will be saved in DB.
      */
     @Override
-    public void save(ProductOrder object) {
-        dbm.save(object, SQLQueries.SAVE_PRODUCT_ORDER);
+    public void save(ProductOrder productOrder) {
+        executeQuery(String.format(SAVE_PRODUCT_ORDER, productOrder.toQuery()));
     }
 
     /**
@@ -27,7 +29,7 @@ public class ProductsOrderDao implements CrudDao<ProductOrder>,SQLQueries {
      */
     @Override
     public ProductOrder getByID(int id) {
-        return (ProductOrder) dbm.getByID(id, SQLQueries.GET_PRODUCT_ORDER_BY_ID, new ProductOrderHandler());
+        return (ProductOrder) dbm.getByID(id, GET_PRODUCT_ORDER_BY_ID, new ProductOrderHandler());
     }
 
     /**
@@ -35,11 +37,12 @@ public class ProductsOrderDao implements CrudDao<ProductOrder>,SQLQueries {
      */
     @Override
     public void delete(int id) {
-        dbm.delete(id, SQLQueries.DELETE_PRODUCT_ORDER);
+        dbm.delete(id, DELETE_PRODUCT_ORDER);
     }
 
     @Override
-    public void deleteAll(String database) {
+    public void deleteAll() {
+        executeUpdate(String.format(DELETE_ALL_RECORDS, "customers_1"));
 
     }
 
@@ -47,7 +50,7 @@ public class ProductsOrderDao implements CrudDao<ProductOrder>,SQLQueries {
      * Method update() will activate or deactivate customer by given customerId.
      */
     public void update(ProductOrder productOrder, int id) {
-        dbm.update(productOrder, SQLQueries.UPDATE_PRODUCT_ORDER, id);
+        executeQuery(String.format(UPDATE_RECORD, "product_orders", productOrder.toString(), id));
     }
 
     @Override

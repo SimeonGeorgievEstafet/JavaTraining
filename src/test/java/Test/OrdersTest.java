@@ -16,9 +16,11 @@ public class OrdersTest {
 //        orderDao.save(order2);
 //
 //        orderDao.delete(1112);
-//        orderDao.update(25);
+//        orderDao.update(3);
+        orderDao.deleteAll();
+
 //        orderDao.getProductOrdersByOrderId(1065);
-            orderDao.getRecordsCount();
+//            orderDao.getRecordsCount();
 //        List<Order> orderList = new OrderHelper().CreateObjects(3);
     }
 }

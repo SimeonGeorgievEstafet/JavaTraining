@@ -9,12 +9,12 @@ import java.util.List;
 public class CustomerAddressTest {
     public static void main(String[] args) {
         CustomerAddressDao customerAddressDao = new CustomerAddressDao();
-        customerAddressDao.getRecordsCount();
-//        CustomerAddress customerAddress = new CustomerAddressHelper().CreateObject();
+//        customerAddressDao.getRecordsCount();
+        CustomerAddress customerAddress = new CustomerAddressHelper().CreateObject();
 //
-//        customerAddressDao.update(new CustomerAddressHelper().CreateObject(), 84);
+//        customerAddressDao.update(new CustomerAddressHelper().CreateObject(), 86);
 //        customerAddressDao.delete(84);
-//
+            customerAddressDao.deleteAll();
 //        customerAddressDao.save(customerAddress);
 //        customerAddressDao.getByID(6);
 //

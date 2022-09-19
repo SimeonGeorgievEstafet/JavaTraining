@@ -1,22 +1,14 @@
 package Dao;
 
 import Databases.DatabaseManager;
-import Databases.DatabaseSingleton.DatabaseSingletonHelper;
 import Handlers.OrderHandler;
-import Handlers.ProductOrderHandler;
-import Helpers.SQLQueries;
+import Helpers.Queries.SQLOrderQueries;
+import Helpers.Queries.SQLQueries;
 import POJO.Order;
-import POJO.ProductOrder;
-import org.apache.commons.dbutils.QueryRunner;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import static Databases.DatabaseManager.*;
 
-import static Databases.DatabaseManager.executeQuery;
-
-public class OrderDao implements CrudDao<Order>,SQLQueries {
+public class OrderDao implements CrudDao<Order>, SQLOrderQueries, SQLQueries {
 
     DatabaseManager dbm = new DatabaseManager();
 
@@ -27,8 +19,9 @@ public class OrderDao implements CrudDao<Order>,SQLQueries {
      * will be executed and order will be saved in DB.
      */
     @Override
-    public void save(Order object) {
-        dbm.save(object, SQLQueries.SAVE_ORDER);
+    public void save(Order order) {
+        executeQuery(String.format(SAVE_ORDER, order.toQuery()));
+
     }
 
     /**
@@ -37,7 +30,7 @@ public class OrderDao implements CrudDao<Order>,SQLQueries {
      */
     @Override
     public Order getByID(int id) {
-        return (Order) dbm.getByID(id, SQLQueries.GET_ORDER_BY_ID, new OrderHandler());
+        return (Order) dbm.getByID(id, GET_ORDER_BY_ID, new OrderHandler());
     }
 
     /**
@@ -45,11 +38,12 @@ public class OrderDao implements CrudDao<Order>,SQLQueries {
      */
     @Override
     public void delete(int orderId) {
-        dbm.delete(orderId, SQLQueries.DELETE_ORDER);
+        dbm.delete(orderId, DELETE_ORDER);
     }
 
     @Override
-    public void deleteAll(String database) {
+    public void deleteAll() {
+        executeUpdate(String.format(DELETE_ALL_RECORDS, "customers_1"));
 
     }
 
@@ -57,27 +51,26 @@ public class OrderDao implements CrudDao<Order>,SQLQueries {
      * Method update() will make order paid by order id.
      */
     public void update(int id) {
-        dbm.update(new Order(), SQLQueries.UPDATE_ORDER, id);
+        executeQuery(String.format(UPDATE_RECORD, "orders","date_of_order_completed = now()", id));
     }
-
-
-    public List<ProductOrder> getProductOrdersByOrderId(int id) {
-        List<ProductOrder> productOrders = new ArrayList<>();
-        ProductOrderHandler poh = new ProductOrderHandler();
-        QueryRunner queryRunner = new QueryRunner();
-
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            try {
-                productOrders = queryRunner.query(conn, SQLQueries.GET_PRODUCT_ORDER_BY_ORDER_ID, poh, id);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println(productOrders);
-            return productOrders;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//      To be implemented
+//    public List<ProductOrder> getProductOrdersByOrderId(int id) {
+//        List<ProductOrder> productOrders = new ArrayList<>();
+//        ProductOrderHandler poh = new ProductOrderHandler();
+//        QueryRunner queryRunner = new QueryRunner();
+//
+//        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+//            try {
+//                productOrders = queryRunner.query(conn, GET_PRODUCT_ORDER_BY_ORDER_ID, poh, id);
+//            } catch (SQLException e) {
+//                throw new RuntimeException(e);
+//            }
+//            System.out.println(productOrders);
+//            return productOrders;
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @Override
     public void getRecordsCount() {

@@ -1,14 +1,15 @@
 package Test;
 
 import Dao.CustomerDao;
+import Helpers.CustomerHelper;
+import POJO.Customer;
 
 public class CustomerTest {
     public static void main(String[] args) {
 
-//        final String ACTIVATE = "activate";
-//        final String DEACTIVATE = "deactivate";
-//        Customer customer = new CustomerHelper().CreateObject();
+        Customer customer = new CustomerHelper().CreateObject();
         CustomerDao customerDao = new CustomerDao();
+
 //          customerDao.getRecordsCount();
 //        List<Customer> customerList = new CustomerHelper().CreateObjects(6);
 //        customerDao.getCustomerAddress(13);
@@ -17,11 +18,11 @@ public class CustomerTest {
 ////        Get random customerId
 //        customerDao.getRandomId();
 //
-////        save new customer
+//        save new customer
 //        customerDao.save(customer);
 //
 //////        delete all customers
-        customerDao.deleteAll("customers_1");
+        customerDao.deleteAll();
 //
 ////        Create 15 customers!
 //        for (int i = 0; i < 100; i++) {
@@ -30,11 +31,11 @@ public class CustomerTest {
 //        }
 //
 //
-////        Deactivate customer
-//        customerDao.update(DEACTIVATE, 6);
+//        Deactivate customer
+//        customerDao.update("deactivate", 9);
 //
 ////        Activate customer
-//        customerDao.update(ACTIVATE, 6);
+//        customerDao.update("activate", 9);
 //
 ////        Delete customer by ID
 //        customerDao.delete(1222);
