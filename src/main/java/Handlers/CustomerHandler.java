@@ -20,7 +20,6 @@ public class CustomerHandler extends BeanListHandler<Customer> {
 
     public static Map<String, String> mapColumnsToFields() {
         Map<String, String> columnsToFieldsMap = new HashMap<>();
-        columnsToFieldsMap.put("customer_id", "customerId");
         columnsToFieldsMap.put("activation_date", "activationDate");
         columnsToFieldsMap.put("deactivation_date", "deactivationDate");
         return columnsToFieldsMap;

@@ -4,14 +4,22 @@ import Databases.DatabaseManager;
 import Handlers.OrderHandler;
 import Helpers.Queries.SQLOrderQueries;
 import Helpers.Queries.SQLQueries;
+import Helpers.ResultSetMapper;
 import POJO.Order;
 
-import static Databases.DatabaseManager.*;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringJoiner;
+
+import static Databases.DatabaseManager.executeQuery;
+import static Databases.DatabaseManager.executeUpdate;
 
 public class OrderDao implements CrudDao<Order>, SQLOrderQueries, SQLQueries {
 
-    DatabaseManager dbm = new DatabaseManager();
-
+    DatabaseManager databaseManager = new DatabaseManager();
+    ResultSetMapper<Integer> resultSetMapper = new ResultSetMapper<>();
+    String tableName = "orders";
 
     /**
      * Method save() will get created order and will prepare a
@@ -29,8 +37,29 @@ public class OrderDao implements CrudDao<Order>, SQLOrderQueries, SQLQueries {
      * and map it to Order.Class using DbUtils with custom handler.
      */
     @Override
-    public Order getByID(int id) {
-        return (Order) dbm.getByID(id, GET_ORDER_BY_ID, new OrderHandler());
+    public Object getByID(int id) {
+        OrderHandler orderHandler = new OrderHandler();
+        return databaseManager.getByID(String.format(GET_BY_ID, tableName, id), orderHandler);
+    }
+
+    /**
+     * Method getByIDs() will get a list of customers,
+     */
+    @Override
+
+    public List<Object> getByIDs(List<Integer> ids) {
+        OrderHandler orderHandler = new OrderHandler();
+        List<Object> orderList = new ArrayList<>();
+        // join all ID-s as one string
+        StringJoiner joiner = new StringJoiner(",");
+        for (Integer id : ids) {
+            joiner.add(String.valueOf(id));
+        }
+        String query = String.format(GET_BY_IDS, tableName, joiner);
+
+        databaseManager.getByIDs(query, orderHandler);
+        System.out.println(orderList);
+        return orderList;
     }
 
     /**
@@ -38,45 +67,43 @@ public class OrderDao implements CrudDao<Order>, SQLOrderQueries, SQLQueries {
      */
     @Override
     public void delete(int orderId) {
-        dbm.delete(orderId, DELETE_ORDER);
+        databaseManager.delete(orderId, DELETE_ORDER);
     }
 
     @Override
     public void deleteAll() {
         executeUpdate(String.format(DELETE_ALL_RECORDS, "customers_1"));
-
     }
 
     /**
      * Method update() will make order paid by order id.
      */
     public void update(int id) {
-        executeQuery(String.format(UPDATE_RECORD, "orders","date_of_order_completed = now()", id));
+        executeQuery(String.format(UPDATE_RECORD, tableName, "date_of_order_completed = now()", id));
     }
-//      To be implemented
-//    public List<ProductOrder> getProductOrdersByOrderId(int id) {
-//        List<ProductOrder> productOrders = new ArrayList<>();
-//        ProductOrderHandler poh = new ProductOrderHandler();
-//        QueryRunner queryRunner = new QueryRunner();
-//
-//        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-//            try {
-//                productOrders = queryRunner.query(conn, GET_PRODUCT_ORDER_BY_ORDER_ID, poh, id);
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
-//            }
-//            System.out.println(productOrders);
-//            return productOrders;
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     @Override
     public void getRecordsCount() {
-        executeQuery(String.format(GET_RECORD_COUNT, "orders"));
+        ResultSet rs = executeQuery(String.format(GET_RECORD_COUNT, tableName));
+        System.out.println(resultSetMapper.mapResultSetToInt(rs));
     }
 
-    ;
+    @Override
+    public int getRandomId() {
+
+        ResultSet rs = executeQuery(String.format(GET_RANDOM_ID, tableName));
+        int id = resultSetMapper.mapResultSetToInt(rs);
+        System.out.println(id);
+        return id;
+    }
+
+    @Override
+    public List<Integer> getRandomIds(int numberOfIds) {
+        List<Integer> ids;
+        ResultSet rs = executeQuery(String.format(GET_RANDOM_IDS, tableName, numberOfIds));
+        ids = resultSetMapper.mapResultSetToList(rs);
+        System.out.println(ids);
+        return ids;
+    }
 
 }

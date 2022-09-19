@@ -18,7 +18,6 @@ public class CustomerAddressHandler extends BeanListHandler<CustomerAddress> {
 
     public static Map<String, String> mapColumnsToFields() {
         Map<String, String> columnsToFieldsMap = new HashMap<>();
-        columnsToFieldsMap.put("customer_address_id", "customerAddressId");
         columnsToFieldsMap.put("postal_code", "postalCode");
         return columnsToFieldsMap;
     }

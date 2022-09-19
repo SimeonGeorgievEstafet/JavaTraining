@@ -21,8 +21,8 @@ import java.util.List;
 public class Order implements Serializable {
 
     @Id
-    @Column(name = "order_id", nullable = false)
-    int orderId;
+    @Column(name = "id", nullable = false)
+    int id;
 
     @Column(name = "customer_id")
     int customerId;

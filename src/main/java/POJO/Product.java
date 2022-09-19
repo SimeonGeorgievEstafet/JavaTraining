@@ -19,8 +19,8 @@ import java.io.Serializable;
 public class Product implements Serializable {
 
     @Id
-    @Column(name = "product_id", nullable = false)
-    String productId;
+    @Column(name = "id", nullable = false)
+    String id;
 
     @NotNull
     @Column(name = "product_name")

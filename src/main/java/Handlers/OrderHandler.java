@@ -19,7 +19,6 @@ public class OrderHandler extends BeanListHandler<Order> {
 
     public static Map<String, String> mapColumnsToFields() {
         Map<String, String> columnsToFieldsMap = new HashMap<>();
-        columnsToFieldsMap.put("order_id", "orderId");
         columnsToFieldsMap.put("customer_id", "customerId");
         columnsToFieldsMap.put("is_order_completed", "isOrderCompleted");
         columnsToFieldsMap.put("is_order_paid", "isOrderPaid");

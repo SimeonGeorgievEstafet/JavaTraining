@@ -4,29 +4,29 @@ import Databases.DatabaseManager;
 import Databases.DatabaseSingleton.DatabaseSingletonHelper;
 import Handlers.CustomerAddressHandler;
 import Handlers.CustomerHandler;
-import Helpers.ResultSetMapper;
 import Helpers.Queries.SQLCustomerQueries;
 import Helpers.Queries.SQLQueries;
+import Helpers.ResultSetMapper;
 import POJO.Customer;
 import POJO.CustomerAddress;
 import org.apache.commons.dbutils.QueryRunner;
 
 import java.lang.reflect.Field;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, SQLCustomerQueries, SQLQueries {
+    String tableName = "customers";
+    DatabaseManager databaseManager = new DatabaseManager();
+    ResultSetMapper<Integer> resultSetMapper = new ResultSetMapper<>();
 
-    DatabaseManager dbm = new DatabaseManager();
 
-    /**
-     * //     * Method save() will get created customer and will prepare a
-     * //     * SQL statement with correct parameters. After that the Query
-     * //     * will be executed and customer will be saved in DB.
-     * //
-     */
     @Override
     public void save(Customer customer) {
         executeQuery(String.format(SAVE_CUSTOMER, customer.toQuery()));
@@ -49,6 +49,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         executeUpdate(String.format(DELETE_ALL_RECORDS, "customers_1"));
     }
 
+
     /**
      * Method update() will activate or deactivate customer by given customerId.
      */
@@ -59,144 +60,13 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
             executeQuery(String.format(DEACTIVATE_CUSTOMER, customerId));
         }
     }
-//
-//    /**
-//     * delete() will delete a customer by given customerId
-//     */
-//    @Override
-//    public void delete(int customerId) {
-//        dbm.delete(customerId, DELETE_CUSTOMER);
-//    }
-
-    /**
-     * This method will get random customer from the DB and will return customerId
-     */
-    public int getRandomId() {
-        int CustomerId = 0;
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(GET_RANDOM_CUSTOMER);
-            try {
-                if (rs.next()) {
-                    CustomerId = Integer.parseInt(rs.getString(1));
-                    System.out.println(CustomerId);
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return CustomerId;
-    }
-
-    /**
-     * getByID() method will get customer by id,
-     * will map the values from result set to Customer object
-     * and will return Customer.
-     */
-    @Override
-    public Customer getByID(int id) {
-        Customer customer = null;
-
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            PreparedStatement ps = conn.prepareStatement(GET_CUSTOMER_BY_ID);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            try {
-                while (rs.next()) {
-                    customer = mapResultSetToCustomer(rs);
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        System.out.println(customer);
-        return customer;
-    }
-
-    /**
-     * Method getByIDs() will get a list of customers,
-     * then it will find them in the DB and will return a list of customers.
-     */
-    public List<Customer> getByIDs(List<Integer> ids) {
-
-        List<Customer> customersList = new ArrayList<>();
-
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            //Next logic will create as many "?" as the size of the list "ids" is.
-            StringBuilder builder = new StringBuilder();
-            builder.append("?,".repeat(ids.size()));
-            String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
-            String query = GET_CUSTOMER_BY_IDS.replace("?", placeHolders);
-
-            //Put all the values in the Query
-            PreparedStatement ps = conn.prepareStatement(query);
-            int index = 1;
-            for (Object o : ids) {
-                ps.setObject(index++, o);
-            }
-
-            //Executing the Query
-            ResultSet rs = ps.executeQuery();
-            try {
-                while (rs.next()) {
-                    Customer customer = mapResultSetToCustomer(rs);
-                    customersList.add(customer);
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        System.out.println(customersList);
-        return customersList;
-    }
 
     @Override
     public void getRecordsCount() {
-        executeQuery(String.format(GET_RECORD_COUNT, "customers"));
+        ResultSet rs = executeQuery(String.format(GET_RECORD_COUNT, tableName));
+        System.out.println(resultSetMapper.mapResultSetToInt(rs));
     }
 
-
-    /**
-     * getRandomIds() method will get a number as Integer,
-     * after that it will execute QUERY with that number.
-     * The result of the QUERY will be a String with randomIDs from the DB.
-     * After set of transformation the method will return ArrayList with random IDs.
-     */
-    public ArrayList<Integer> getRandomIds(int j) {
-        ArrayList<Integer> customerIds = new ArrayList<>();
-
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            PreparedStatement ps = conn.prepareStatement(GET_RANDOM_IDS);
-            ps.setInt(1, j);
-            ResultSet rs = ps.executeQuery();
-            String result;
-            //transforming result to ArrayList
-            try {
-                if (rs.next()) {
-                    result = rs.getString(1);
-                    result = result.replace("{", "");
-                    result = result.replace("}", "");
-
-                    String[] convertedResultArray = result.split(",");
-                    for (String number : convertedResultArray) {
-                        customerIds.add(Integer.parseInt(number.trim()));
-                    }
-                    System.out.println(result);
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return customerIds;
-    }
 
     /**
      * This implementation is using ResultSetMapper instead of manually
@@ -205,7 +75,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
     public List<Customer> getByIdResultSetMapper(List<Integer> ids) {
         List<Customer> customersList = new ArrayList<>();
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            ResultSetMapper<Customer> resultSetMapper = new ResultSetMapper<Customer>();
+            ResultSetMapper<Customer> resultSetMapper = new ResultSetMapper<>();
 
             //Next logic will create as many "?" as the size of the list "ids" is.
             StringBuilder builder = new StringBuilder();
@@ -240,7 +110,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         ResultSetMapper<Customer> resultSetMapper = new ResultSetMapper<Customer>();
 
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            PreparedStatement ps = conn.prepareStatement(GET_CUSTOMER_BY_ID);
+            PreparedStatement ps = conn.prepareStatement(GET_BY_ID);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
@@ -263,7 +133,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         Customer customer = null;
 
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            PreparedStatement ps = conn.prepareStatement(GET_CUSTOMER_BY_ID);
+            PreparedStatement ps = conn.prepareStatement(GET_BY_ID);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             try {
@@ -280,24 +150,6 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         return customer;
     }
 
-    /**
-     * This method will map ResultSet to a Customer object
-     */
-    public Customer mapResultSetToCustomer(ResultSet rs) throws SQLException {
-        return Customer.builder().
-                customerId(rs.getString("customer_id"))
-                .name(rs.getString("name"))
-                .email(rs.getString("email"))
-                .phone(rs.getString("phone"))
-                .age(rs.getInt("age"))
-                .gdpr(rs.getBoolean("gdpr"))
-                .customerProfileStatus(rs.getBoolean("customer_profile_status"))
-                .deactivationDate(rs.getDate("deactivation_date"))
-                .reason(rs.getString("reason"))
-                .notes(rs.getString("notes"))
-                .activationDate(rs.getDate("activation_date"))
-                .build();
-    }
 
     /**
      * This method will map ResultSet to a Customer object using a Reflection method
@@ -367,16 +219,6 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
 
 
     /**
-     * getByIdDbUtils() method will get customer by id
-     * and map it to Customer.Class using DbUtils with custom handler.
-     */
-    public Customer getByIdDbUtils(int id) {
-        CustomerHandler ch = new CustomerHandler();
-        return (Customer) dbm.getByID(id, GET_CUSTOMER_BY_ID, ch);
-    }
-
-
-    /**
      * getByIdsDbUtils() method will get customers by ids
      * and will return a list with Customers
      * using DbUtils with custom handler.
@@ -433,26 +275,50 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
         }
     }
 
-//    To be implemented
-//    /**
-//     * getCustomerAddress() method will get customer address.
-//     */
-//    public List<Order> getCustomerOrders(int id) {
-//        OrderHandler oh = new OrderHandler();
-//        List<Order> orderList = new ArrayList<>();
-//        QueryRunner queryRunner = new QueryRunner();
-//
-//        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-//            try {
-//                orderList = queryRunner.query(conn, GET_ALL_CUSTOMER_ORDERS, oh, id);
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
-//            }
-//            System.out.println(orderList);
-//            return orderList;
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+
+    @Override
+    public int getRandomId() {
+        ResultSet rs = executeQuery(String.format(GET_RANDOM_ID, tableName));
+        return resultSetMapper.mapResultSetToInt(rs);
+    }
+
+    @Override
+    public List<Integer> getRandomIds(int numberOfIds) {
+        List<Integer> ids;
+        ResultSet rs = executeQuery(String.format(GET_RANDOM_IDS, tableName, numberOfIds));
+        ids = resultSetMapper.mapResultSetToList(rs);
+        System.out.println(ids);
+        return ids;
+    }
+
+    /**
+     * getByID() method will get customer by id
+     * and map it to Customer.Class using DbUtils with custom handler.
+     */
+    @Override
+    public Object getByID(int id) {
+        CustomerHandler customerHandler = new CustomerHandler();
+        return databaseManager.getByID(String.format(GET_BY_ID, tableName, id), customerHandler);
+    }
+
+    /**
+     * Method getByIDs() will get a list of customers,
+     */
+    @Override
+    public List<Object> getByIDs(List<Integer> ids) {
+        CustomerHandler customerHandler = new CustomerHandler();
+        List<Object> customersList = new ArrayList<>();
+        // join all ID-s as one string
+        StringJoiner joiner = new StringJoiner(",");
+        for (Integer id : ids) {
+            joiner.add(String.valueOf(id));
+        }
+        String query = String.format(GET_BY_IDS, tableName, joiner);
+
+        databaseManager.getByIDs(query, customerHandler);
+        System.out.println(customersList);
+        return customersList;
+    }
+
 }
 
