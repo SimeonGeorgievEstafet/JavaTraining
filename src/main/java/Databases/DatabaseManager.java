@@ -45,6 +45,16 @@ public class DatabaseManager {
         }
     }
 
+    public static ResultSet ExecuteQueryAndReturnInt(String query) {
+        ResultSet rs;
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            PreparedStatement ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return rs;
+    }
 
     /**
      * Method delete() will delete record in the db by id and query.
@@ -99,7 +109,7 @@ public class DatabaseManager {
      * getByID() method will return Object(Customer,Order,CustomerAddress,Product) by,
      * required id, query and ObjectHandler(ProductHandler,OrderHandler...)
      */
-    public Object getByIDs(String query, Object object) {
+    public List<Object> getByIDs(String query, Object object) {
         List<Object> objectList;
         QueryRunner queryRunner = new QueryRunner();
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
@@ -109,9 +119,11 @@ public class DatabaseManager {
                 throw new RuntimeException(e);
             }
             System.out.println(objectList);
+            //Return List not Object
             return objectList;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
 }

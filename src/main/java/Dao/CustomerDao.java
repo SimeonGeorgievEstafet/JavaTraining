@@ -68,62 +68,62 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
     }
 
 
-    /**
-     * This implementation is using ResultSetMapper instead of manually
-     * mapping columns from the DB to the Customer object.
-     */
-    public List<Customer> getByIdResultSetMapper(List<Integer> ids) {
-        List<Customer> customersList = new ArrayList<>();
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            ResultSetMapper<Customer> resultSetMapper = new ResultSetMapper<>();
+//    /**
+//     * This implementation is using ResultSetMapper instead of manually
+//     * mapping columns from the DB to the Customer object.
+//     */
+//    public List<Customer> getByIdResultSetMapper(List<Integer> ids) {
+//        List<Customer> customersList = new ArrayList<>();
+//        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+//            ResultSetMapper<Customer> resultSetMapper = new ResultSetMapper<>();
+//
+//            //Next logic will create as many "?" as the size of the list "ids" is.
+//            StringBuilder builder = new StringBuilder();
+//            builder.append("?,".repeat(ids.size()));
+//            String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
+//            String query = GET_CUSTOMER_BY_IDS.replace("?", placeHolders);
+//
+//            //Put all the values in the Query
+//            PreparedStatement ps = conn.prepareStatement(query);
+//            int index = 1;
+//            for (Object o : ids) {
+//                ps.setObject(index++, o);
+//            }
+//            //Executing the Query
+//            ResultSet rs = ps.executeQuery();
+//
+//            //Map te result with resultSetMapper to Customer.class
+//            customersList = resultSetMapper.mapResultSetToObject(rs, Customer.class);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println(customersList);
+//        return customersList;
+//    }
 
-            //Next logic will create as many "?" as the size of the list "ids" is.
-            StringBuilder builder = new StringBuilder();
-            builder.append("?,".repeat(ids.size()));
-            String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
-            String query = GET_CUSTOMER_BY_IDS.replace("?", placeHolders);
-
-            //Put all the values in the Query
-            PreparedStatement ps = conn.prepareStatement(query);
-            int index = 1;
-            for (Object o : ids) {
-                ps.setObject(index++, o);
-            }
-            //Executing the Query
-            ResultSet rs = ps.executeQuery();
-
-            //Map te result with resultSetMapper to Customer.class
-            customersList = resultSetMapper.mapResultSetToObject(rs, Customer.class);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        System.out.println(customersList);
-        return customersList;
-    }
-
-    /**
-     * getByIdResultSetMapper() method will get customer by id
-     * and map it to Customer.Class using ResultSetMapper.
-     */
-    public Customer getByIdResultSetMapper(int id) {
-        Customer customer = null;
-        ResultSetMapper<Customer> resultSetMapper = new ResultSetMapper<Customer>();
-
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            PreparedStatement ps = conn.prepareStatement(GET_BY_ID);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            //Map te result with resultSetMapper to Customer.class
-            List<Customer> customersList = new ArrayList<>();
-            customersList = resultSetMapper.mapResultSetToObject(rs, Customer.class);
-            customer = customersList.get(0);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        System.out.println(customer);
-        return customer;
-    }
+//    /**
+//     * getByIdResultSetMapper() method will get customer by id
+//     * and map it to Customer.Class using ResultSetMapper.
+//     */
+//    public Customer getByIdResultSetMapper(int id) {
+//        Customer customer = null;
+//        ResultSetMapper<Customer> resultSetMapper = new ResultSetMapper<Customer>();
+//
+//        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+//            PreparedStatement ps = conn.prepareStatement(GET_BY_ID);
+//            ps.setInt(1, id);
+//            ResultSet rs = ps.executeQuery();
+//
+//            //Map te result with resultSetMapper to Customer.class
+//            List<Customer> customersList = new ArrayList<>();
+//            customersList = resultSetMapper.mapResultSetToObject(rs, Customer.class);
+//            customer = customersList.get(0);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println(customer);
+//        return customer;
+//    }
 
     /**
      * getByIdReflection() method will get customer by id
@@ -297,8 +297,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
      */
     @Override
     public Object getByID(int id) {
-        CustomerHandler customerHandler = new CustomerHandler();
-        return databaseManager.getByID(String.format(GET_BY_ID, tableName, id), customerHandler);
+        return resultSetMapper.mapResultSetToObject(executeQuery(String.format(GET_BY_ID, tableName, id)), Customer.class);
     }
 
     /**
@@ -306,18 +305,12 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
      */
     @Override
     public List<Object> getByIDs(List<Integer> ids) {
-        CustomerHandler customerHandler = new CustomerHandler();
-        List<Object> customersList = new ArrayList<>();
         // join all ID-s as one string
         StringJoiner joiner = new StringJoiner(",");
         for (Integer id : ids) {
             joiner.add(String.valueOf(id));
         }
-        String query = String.format(GET_BY_IDS, tableName, joiner);
-
-        databaseManager.getByIDs(query, customerHandler);
-        System.out.println(customersList);
-        return customersList;
+        return resultSetMapper.mapResultSetToObjects(executeQuery(String.format(GET_BY_IDS, tableName, joiner)), Customer.class);
     }
 
 }

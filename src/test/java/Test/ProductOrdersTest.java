@@ -14,11 +14,11 @@ public class ProductOrdersTest {
         productOrder.setOrderedQuantity(productsOrderDao.getRandomId());
         productsOrderDao.update(productOrder, productsOrderDao.getRandomId());
         productsOrderDao.deleteAll();
-
-        //New
         productsOrderDao.getRecordsCount();
         productsOrderDao.getRandomId();
         productsOrderDao.getRandomIds(4);
+
+        //New
         productsOrderDao.getByID(productsOrderDao.getRandomId());
         productsOrderDao.getByIDs(productsOrderDao.getRandomIds(5));
     }
