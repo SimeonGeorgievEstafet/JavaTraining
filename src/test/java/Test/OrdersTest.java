@@ -12,11 +12,11 @@ public class OrdersTest {
         orderDao.delete(orderDao.getRandomId());
         orderDao.update(orderDao.getRandomId());
         orderDao.deleteAll();
-
-        //NEW
         orderDao.getRecordsCount();
         orderDao.getRandomId();
         orderDao.getRandomIds(4);
+
+        //NEW
         orderDao.getByID(orderDao.getRandomId());
         orderDao.getByIDs(orderDao.getRandomIds(5));
 

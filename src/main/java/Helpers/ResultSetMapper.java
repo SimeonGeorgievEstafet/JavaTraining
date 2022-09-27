@@ -15,8 +15,8 @@ import java.util.List;
 
 public class ResultSetMapper<T> {
     @SuppressWarnings("unchecked")
-    public List<T> mapResultSetToObject(ResultSet rs, Class outputClass) {
-        List<T> outputList = null;
+    public List<Object> mapResultSetToObjects(ResultSet rs, Class outputClass) {
+        List<Object> outputList = new ArrayList<>();
         try {
             // make sure ResultSet is not null
             if (rs != null) {
@@ -51,13 +51,11 @@ public class ResultSetMapper<T> {
                             }
                         }
                         if (outputList == null) {
-                            outputList = new ArrayList<T>();
+                            outputList = new ArrayList<Object>();
                         }
                         outputList.add(bean);
                     }
 
-                } else {
-                    // throw some error
                 }
             } else {
                 return null;
@@ -67,7 +65,16 @@ public class ResultSetMapper<T> {
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
+        for (Object o : outputList) {
+            System.out.println(o);
+        }
         return outputList;
+    }
+
+
+    public Object mapResultSetToObject(ResultSet rs, Class outputClass) {
+        List<Object> objects = mapResultSetToObjects(rs, outputClass);
+        return objects.get(0);
     }
 
     public int mapResultSetToInt(ResultSet resultSet) {

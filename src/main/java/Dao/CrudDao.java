@@ -1,7 +1,6 @@
 package Dao;
 
-import POJO.Customer;
-
+import java.sql.SQLException;
 import java.util.List;
 
 public interface CrudDao<T> {
@@ -20,5 +19,5 @@ public interface CrudDao<T> {
 
     List<Integer> getRandomIds(int numberOfIds);
 
-    List<Object> getByIDs(List<Integer> ids);
+    List<Object> getByIDs(List<Integer> ids) throws SQLException;
 }
