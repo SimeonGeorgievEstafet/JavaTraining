@@ -3,14 +3,19 @@ package Databases;
 import Databases.DatabaseSingleton.DatabaseSingletonHelper;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
  * This class will handle basic CRUD operations.
  */
-public class DatabaseManager {
+public class DatabaseManager<T> {
 
     public static ResultSet executeQuery(String query) {
         ResultSet rs;
@@ -23,19 +28,6 @@ public class DatabaseManager {
         return rs;
     }
 
-    private static void ResultSetPrint(ResultSet rs) throws SQLException {
-        ResultSetMetaData rsmd = rs.getMetaData();
-        while (rs.next()) {
-            int columnsNumber = rsmd.getColumnCount();
-            for (int i = 1; i <= columnsNumber; i++) {
-                if (i > 1) System.out.print(",  ");
-                String columnValue = rs.getString(i);
-                System.out.print(columnValue + " " + rsmd.getColumnName(i));
-            }
-            System.out.println("");
-        }
-    }
-
     public static void executeUpdate(String query) {
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
             PreparedStatement ps = conn.prepareStatement(query);
@@ -45,21 +37,10 @@ public class DatabaseManager {
         }
     }
 
-    public static ResultSet ExecuteQueryAndReturnInt(String query) {
-        ResultSet rs;
-        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
-            PreparedStatement ps = conn.prepareStatement(query);
-            rs = ps.executeQuery();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return rs;
-    }
-
     /**
      * Method delete() will delete record in the db by id and query.
      */
-    public void delete(int id, String query) {
+    public static void delete(int id, String query) {
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setInt(1, id);
@@ -73,8 +54,7 @@ public class DatabaseManager {
     /**
      * Method delete() will delete record in the db by id and query.
      */
-    public void getRecordsCount(String query) {
-        String count;
+    public static void getRecordsCount(String query) {
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, query);
@@ -89,12 +69,12 @@ public class DatabaseManager {
      * getByID() method will return Object(Customer,Order,CustomerAddress,Product) by,
      * required id, query and ObjectHandler(ProductHandler,OrderHandler...)
      */
-    public Object getByID(String query, Object object) {
-        List<Object> objectList;
+    public T getByID(String query, T object) {
+        List<T> objectList;
         QueryRunner queryRunner = new QueryRunner();
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
             try {
-                objectList = queryRunner.query(conn, query, (ResultSetHandler<? extends List<Object>>) object);
+                objectList = queryRunner.query(conn, query, (ResultSetHandler<? extends List<T>>) object);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -105,16 +85,38 @@ public class DatabaseManager {
         }
     }
 
+    public T getByIdDbUtils(String QUERY, BeanHandler<T> beanHandler) {
+        T object;
+        QueryRunner queryRunner = new QueryRunner();
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            object = queryRunner.query(conn, QUERY, beanHandler);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return object;
+    }
+
+    public List<T> getByIdsDbUtils(String query, BeanListHandler<T> beanListHandler) {
+        List<T> objectList;
+        QueryRunner queryRunner = new QueryRunner();
+        try (Connection conn = DatabaseSingletonHelper.getInstance()) {
+            objectList = queryRunner.query(conn, query, beanListHandler);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return objectList;
+    }
+
     /**
      * getByID() method will return Object(Customer,Order,CustomerAddress,Product) by,
      * required id, query and ObjectHandler(ProductHandler,OrderHandler...)
      */
-    public List<Object> getByIDs(String query, Object object) {
-        List<Object> objectList;
+    public List<T> getByIDs(String query, T object) {
+        List<T> objectList;
         QueryRunner queryRunner = new QueryRunner();
         try (Connection conn = DatabaseSingletonHelper.getInstance()) {
             try {
-                objectList = queryRunner.query(conn, query, (ResultSetHandler<? extends List<Object>>) object);
+                objectList = queryRunner.query(conn, query, (ResultSetHandler<? extends List<T>>) object);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

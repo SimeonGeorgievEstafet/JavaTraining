@@ -15,8 +15,8 @@ public class CustomerHelper implements ObjectCreator<Customer> {
      * The data will be printed and returned as Customer object.
      */
     public Customer CreateObject() {
-        Customer customer = Customer.builder()
-                .name(faker.name().name())
+        return Customer.builder()
+                .name(faker.name().firstName())
                 .email(faker.internet().emailAddress())
                 .phone(faker.phoneNumber().cellPhone())
                 .age(faker.random().nextInt(18, 99))
@@ -25,8 +25,6 @@ public class CustomerHelper implements ObjectCreator<Customer> {
                 .reason(faker.lorem().fixedString(10))
                 .notes(faker.lorem().fixedString(10))
                 .build();
-        System.out.println(customer);
-        return customer;
     }
 
     /**

@@ -9,7 +9,7 @@ import java.util.Properties;
  */
 public class PropertiesHelper {
 
-    private static final String FILE_PATH = "src/main/resources/config.properties";
+    private static final String FILE_PATH = "src/test/resources/config.properties";
     private static final PropertiesHelper propertiesHelper;
 
     static {

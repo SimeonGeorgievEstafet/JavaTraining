@@ -36,9 +36,7 @@ public class ProductOrder implements Serializable {
 //    Product product;
 
     public String toQuery() {
-        return ("'" + orderId + "','" +
-                productId + "','" +
-                orderedQuantity + "'");
+        return ("'" + orderedQuantity + "'");
     }
 
     public String toString() {

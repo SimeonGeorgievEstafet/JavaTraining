@@ -1,9 +1,11 @@
 package POJO;
 
+import Dao.CustomerAddressDao;
 import com.github.javafaker.Address;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -59,7 +62,6 @@ public class Customer implements Serializable {
     @Column(name = "notes")
     String notes;
 
-    Address address;
 
     List<Order> order;
 
@@ -74,4 +76,16 @@ public class Customer implements Serializable {
                 notes + "'");
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer)) return false;
+        Customer customer = (Customer) o;
+        return getAge() == customer.getAge() && isGdpr() == customer.isGdpr() && isCustomerProfileStatus() == customer.isCustomerProfileStatus() && getName().equals(customer.getName()) && getEmail().equals(customer.getEmail()) && getPhone().equals(customer.getPhone()) && Objects.equals(getReason(), customer.getReason()) && Objects.equals(getNotes(), customer.getNotes());
+    }
+
+    public CustomerAddress getCustomerAddress() {
+        CustomerAddressDao customerAddressDao = new CustomerAddressDao();
+        return customerAddressDao.getByID(Integer.parseInt(id));
+    }
 }
