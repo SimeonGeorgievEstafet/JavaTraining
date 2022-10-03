@@ -16,7 +16,6 @@ public class OrderHelper implements ObjectCreator<Order> {
      */
     public Order CreateObject() {
         Order order = Order.builder()
-                .customerId(faker.random().nextInt(1001, 1119))
                 .isOrderCompleted(Boolean.FALSE)
                 .isOrderPaid(faker.random().nextBoolean())
                 .build();

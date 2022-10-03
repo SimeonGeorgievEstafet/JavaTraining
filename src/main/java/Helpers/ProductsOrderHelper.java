@@ -29,7 +29,6 @@ public class ProductsOrderHelper implements ObjectCreator<ProductOrder> {
      */
     public ProductOrder CreateProductOrder(int orderId, int productId) {
         ProductOrder productorder = ProductOrder.builder()
-                .orderId(String.valueOf(orderId))
                 .productId(String.valueOf(productId))
                 .orderedQuantity(faker.random().nextInt(1, 100))
                 .build();

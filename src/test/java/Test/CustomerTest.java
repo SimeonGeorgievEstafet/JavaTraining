@@ -8,8 +8,9 @@ public class CustomerTest {
     public static void main(String[] args) {
 
         CustomerDao customerDao = new CustomerDao();
-//        Customer customer = new CustomerHelper().CreateObject();
-//        customerDao.save(customer);
+        Customer customer = new CustomerHelper().CreateObject();
+        customerDao.truncate();
+        customerDao.save(customer);
 //        customerDao.deleteAll();
 //        customerDao.update("deactivate", customerDao.getRandomId());
 //        customerDao.update("activate", customerDao.getRandomId());
@@ -18,9 +19,11 @@ public class CustomerTest {
 //        customerDao.getRecordsCount();
 //        customerDao.getRandomId();
 //        customerDao.getRandomIds(5);
-
-        //New
-        customerDao.getByID(customerDao.getRandomId());
+//
+//        //New
+//        customerDao.getByID(customerDao.getRandomId());
         customerDao.getByIDs(customerDao.getRandomIds(5));
+//        customerDao.getByIdDbUtils(customerDao.getRandomId());
+//        customerDao.getByIdsDbUtils(customerDao.getRandomIds(5));
     }
 }

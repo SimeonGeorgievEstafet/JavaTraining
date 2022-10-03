@@ -1,14 +1,11 @@
 package Dao;
 
-import Databases.DatabaseManager;
-import Handlers.OrderHandler;
 import Helpers.Queries.SQLOrderQueries;
 import Helpers.Queries.SQLQueries;
 import Helpers.ResultSetMapper;
 import POJO.Order;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -17,8 +14,7 @@ import static Databases.DatabaseManager.executeUpdate;
 
 public class OrderDao implements CrudDao<Order>, SQLOrderQueries, SQLQueries {
 
-    DatabaseManager databaseManager = new DatabaseManager();
-    ResultSetMapper<Integer> resultSetMapper = new ResultSetMapper<>();
+    ResultSetMapper<Order> resultSetMapper = new ResultSetMapper<>();
     String tableName = "orders";
 
     /**
@@ -37,37 +33,29 @@ public class OrderDao implements CrudDao<Order>, SQLOrderQueries, SQLQueries {
      * and map it to Order.Class using DbUtils with custom handler.
      */
     @Override
-    public Object getByID(int id) {
-        OrderHandler orderHandler = new OrderHandler();
-        return databaseManager.getByID(String.format(GET_BY_ID, tableName, id), orderHandler);
+    public Order getByID(int id) {
+        return resultSetMapper.mapResultSetToObject(executeQuery(String.format(GET_BY_ID, tableName, id)), Order.class);
     }
 
     /**
      * Method getByIDs() will get a list of customers,
      */
     @Override
-
-    public List<Object> getByIDs(List<Integer> ids) {
-        OrderHandler orderHandler = new OrderHandler();
-        List<Object> orderList = new ArrayList<>();
+    public List<Order> getByIDs(List<Integer> ids) {
         // join all ID-s as one string
         StringJoiner joiner = new StringJoiner(",");
         for (Integer id : ids) {
             joiner.add(String.valueOf(id));
         }
-        String query = String.format(GET_BY_IDS, tableName, joiner);
-
-        databaseManager.getByIDs(query, orderHandler);
-        System.out.println(orderList);
-        return orderList;
+        return resultSetMapper.mapResultSetToObjects(executeQuery(String.format(GET_BY_IDS, tableName, joiner)), Order.class);
     }
 
     /**
      * delete() will delete a product by given productId
      */
     @Override
-    public void delete(int orderId) {
-        databaseManager.delete(orderId, DELETE_ORDER);
+    public void delete(int id) {
+        executeUpdate(String.format(DELETE_RECORD, tableName, id));
     }
 
     @Override
@@ -83,9 +71,14 @@ public class OrderDao implements CrudDao<Order>, SQLOrderQueries, SQLQueries {
     }
 
     @Override
-    public void getRecordsCount() {
+    public void truncate() {
+        executeUpdate(String.format(TRUNCATE_TABLE,tableName));
+    }
+    @Override
+    public int getRecordsCount() {
         ResultSet rs = executeQuery(String.format(GET_RECORD_COUNT, tableName));
         System.out.println(resultSetMapper.mapResultSetToInt(rs));
+        return 0;
     }
 
     @Override

@@ -1,14 +1,11 @@
 package Dao;
 
-import Databases.DatabaseManager;
-import Handlers.ProductHandler;
 import Helpers.Queries.SQLProductQueries;
 import Helpers.Queries.SQLQueries;
 import Helpers.ResultSetMapper;
 import POJO.Product;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -17,8 +14,7 @@ import static Databases.DatabaseManager.executeUpdate;
 
 public class ProductsDao implements CrudDao<Product>, SQLProductQueries, SQLQueries {
     String tableName = "products_inventory";
-    DatabaseManager databaseManager = new DatabaseManager();
-    ResultSetMapper<Integer> resultSetMapper = new ResultSetMapper<>();
+    ResultSetMapper<Product> resultSetMapper = new ResultSetMapper<>();
 
 
     /**
@@ -37,11 +33,10 @@ public class ProductsDao implements CrudDao<Product>, SQLProductQueries, SQLQuer
      * and map it to Product.Class using DbUtils with custom handler.
      */
     @Override
-    public Object getByID(int id) {
-        ProductHandler productHandler = new ProductHandler();
-        Product byID = (Product) databaseManager.getByID(String.format(GET_BY_ID, tableName, id), productHandler);
-        System.out.println(byID.getId());
-        return byID;
+    public Product getByID(int id) {
+        Product product = resultSetMapper.mapResultSetToObject(executeQuery(String.format(GET_BY_ID, tableName, id)), Product.class);
+        System.out.println(product);
+        return product;
     }
 
     /**
@@ -49,19 +44,14 @@ public class ProductsDao implements CrudDao<Product>, SQLProductQueries, SQLQuer
      * then it will find them in the DB and will return a list of customers.
      */
     @Override
-    public List<Object> getByIDs(List<Integer> ids) {
-        List<Object> customersList = new ArrayList<>();
-        ProductHandler productHandler = new ProductHandler();
+    public List<Product> getByIDs(List<Integer> ids) {
         // join all ID-s as one string
         StringJoiner joiner = new StringJoiner(",");
         for (Integer id : ids) {
             joiner.add(String.valueOf(id));
         }
-        String query = String.format(GET_BY_IDS, tableName, joiner);
-
-        databaseManager.getByIDs(query, productHandler);
-        System.out.println(customersList);
-        return customersList;
+        List<Product> products = resultSetMapper.mapResultSetToObjects(executeQuery(String.format(GET_BY_IDS, tableName, joiner)), Product.class);
+        return products;
     }
 
     /**
@@ -69,13 +59,17 @@ public class ProductsDao implements CrudDao<Product>, SQLProductQueries, SQLQuer
      */
     @Override
     public void delete(int id) {
-        databaseManager.delete(id, DELETE_PRODUCT);
+        executeUpdate(String.format(DELETE_RECORD, tableName, id));
     }
 
     @Override
     public void deleteAll() {
         executeUpdate(String.format(DELETE_ALL_RECORDS, "customers_1"));
+    }
 
+    @Override
+    public void truncate() {
+        executeUpdate(String.format(TRUNCATE_TABLE,tableName));
     }
 
     /**
@@ -86,9 +80,10 @@ public class ProductsDao implements CrudDao<Product>, SQLProductQueries, SQLQuer
     }
 
     @Override
-    public void getRecordsCount() {
+    public int getRecordsCount() {
         ResultSet rs = executeQuery(String.format(GET_RECORD_COUNT, tableName));
         System.out.println(resultSetMapper.mapResultSetToInt(rs));
+        return 0;
     }
 
     @Override

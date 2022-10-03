@@ -1,6 +1,5 @@
 package Dao;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface CrudDao<T> {
@@ -9,15 +8,17 @@ public interface CrudDao<T> {
 
     void deleteAll();
 
-    Object getByID(int id);
+    T getByID(int id);
 
     void delete(int id);
 
-    void getRecordsCount();
+    int getRecordsCount();
 
     int getRandomId();
 
     List<Integer> getRandomIds(int numberOfIds);
 
-    List<Object> getByIDs(List<Integer> ids) throws SQLException;
+    List getByIDs(List<Integer> ids);
+
+    void truncate();
 }

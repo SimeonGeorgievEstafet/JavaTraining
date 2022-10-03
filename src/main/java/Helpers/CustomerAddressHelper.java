@@ -16,14 +16,13 @@ public class CustomerAddressHelper implements ObjectCreator<CustomerAddress> {
      */
     public CustomerAddress CreateObject() {
         CustomerAddress customerAddress = CustomerAddress.builder()
-                .address(faker.address().fullAddress())
+                .address(faker.address().cityName())
                 .city(faker.address().city())
                 .province(faker.address().secondaryAddress())
                 .state(faker.address().state())
                 .postalCode(faker.random().nextInt(10000, 99999))
                 .country(faker.address().country())
                 .build();
-        System.out.println(customerAddress);
         return customerAddress;
     }
 
