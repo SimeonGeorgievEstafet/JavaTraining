@@ -69,7 +69,7 @@ public class ProductsDao implements CrudDao<Product>, SQLProductQueries, SQLQuer
 
     @Override
     public void truncate() {
-        executeUpdate(String.format(TRUNCATE_TABLE,tableName));
+        executeUpdate(String.format(TRUNCATE_TABLE, tableName));
     }
 
     /**

@@ -194,7 +194,7 @@ public class CustomerDao extends DatabaseManager implements CrudDao<Customer>, S
 
     @Override
     public void truncate() {
-        executeUpdate(String.format(TRUNCATE_TABLE,tableName));
+        executeUpdate(String.format(TRUNCATE_TABLE, tableName));
     }
 
 

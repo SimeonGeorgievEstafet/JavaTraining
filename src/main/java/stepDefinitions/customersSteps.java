@@ -5,14 +5,12 @@ import Dao.CustomerDao;
 import Helpers.CustomerAddressHelper;
 import Helpers.CustomerHelper;
 import POJO.Customer;
-import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class customersSteps {
@@ -26,9 +24,13 @@ public class customersSteps {
     List<Customer> ids;
 
 
-    @Given("clear the data in table customers")
-    public void truncateDatabase() {
-        customerDao.truncate();
+    @Given("clear the data in table {word}")
+    public void truncateDatabase(String database) {
+        if (database.equals("customers")) {
+            customerDao.truncate();
+        } else {
+            customerAddressDao.truncate();
+        }
     }
 
     @Given("create {int} new customers")
@@ -60,13 +62,12 @@ public class customersSteps {
     public void verifyCustomerIsCreated() {
         customerFromDatabase = customerDao.getByID(numberOfCustomers + 1);
         Assertions.assertEquals(customerFromDatabase, createdCustomer);
-        Assertions.assertNotEquals(numberOfCustomers, customerDao.getRecordsCount());
     }
 
 
     @When("delete random customer from the Database")
     public void deleteRandomCustomerFromTheDatabase() {
-        numberOfCustomers = customerDao.getRecordsCount();
+        getCustomerCountFromDatabase();
         customerDao.delete(customerDao.getRandomId());
     }
 
@@ -75,13 +76,9 @@ public class customersSteps {
         Assertions.assertNotEquals(numberOfCustomers, customerDao.getRecordsCount());
     }
 
-    @Given("users are provided for data verification:")
-    public void usersAreProvidedForDataVerification(DataTable table) {
-        List <Integer> ids = new ArrayList<>();
-        for (int i = 0; i < table.height(); i++) {
-            ids.add(Integer.valueOf(table.cell(i, 0)));
-        }
-        this.ids = customerDao.getByIDs(ids);
+    @Given("{int} users are provided for data verification")
+    public void usersAreProvidedForDataVerification(int count) {
+        this.ids = customerDao.getByIDs(customerDao.getRandomIds(count));
     }
 
     @Then("verify all mandatory fields for users are saved in database.")
@@ -93,8 +90,23 @@ public class customersSteps {
         }
     }
 
-    @Then("verify {int} customers are saved.")
-    public void verifyCustomersAreSaved(int customersCount) {
-        Assertions.assertEquals(customersCount,numberOfCustomers);
+    @And("There are {word} customers in Database")
+    public void thereAreMoreCustomersInDatabase(String condition) {
+        switch (condition) {
+            case "more":
+                Assertions.assertTrue(numberOfCustomers < customerDao.getRecordsCount());
+                break;
+            case "less":
+                Assertions.assertTrue(numberOfCustomers > customerDao.getRecordsCount());
+                break;
+            case "equal":
+                Assertions.assertEquals(numberOfCustomers, customerDao.getRecordsCount());
+                break;
+        }
+    }
+
+    @When("get customer count from Database")
+    public void getCustomerCountFromDatabase() {
+        numberOfCustomers = customerDao.getRecordsCount();
     }
 }
