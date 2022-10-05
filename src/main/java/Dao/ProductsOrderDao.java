@@ -51,7 +51,7 @@ public class ProductsOrderDao implements CrudDao<ProductOrder>, SQLProductOrders
 
     @Override
     public void truncate() {
-        executeUpdate(String.format(TRUNCATE_TABLE,tableName));
+        executeUpdate(String.format(TRUNCATE_TABLE, tableName));
     }
 
     /**

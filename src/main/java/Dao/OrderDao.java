@@ -72,8 +72,9 @@ public class OrderDao implements CrudDao<Order>, SQLOrderQueries, SQLQueries {
 
     @Override
     public void truncate() {
-        executeUpdate(String.format(TRUNCATE_TABLE,tableName));
+        executeUpdate(String.format(TRUNCATE_TABLE, tableName));
     }
+
     @Override
     public int getRecordsCount() {
         ResultSet rs = executeQuery(String.format(GET_RECORD_COUNT, tableName));

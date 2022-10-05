@@ -63,7 +63,7 @@ public class CustomerAddressDao implements CrudDao<CustomerAddress>, SQLCustomer
 
     @Override
     public void truncate() {
-        executeUpdate(String.format(TRUNCATE_TABLE,tableName));
+        executeUpdate(String.format(TRUNCATE_TABLE, tableName));
     }
 
     @Override

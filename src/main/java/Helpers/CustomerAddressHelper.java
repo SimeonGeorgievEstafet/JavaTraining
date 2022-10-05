@@ -16,9 +16,9 @@ public class CustomerAddressHelper implements ObjectCreator<CustomerAddress> {
      */
     public CustomerAddress CreateObject() {
         CustomerAddress customerAddress = CustomerAddress.builder()
-                .address(faker.address().cityName())
+                .address(faker.address().firstName())
                 .city(faker.address().city())
-                .province(faker.address().secondaryAddress())
+                .province(faker.name().firstName())
                 .state(faker.address().state())
                 .postalCode(faker.random().nextInt(10000, 99999))
                 .country(faker.address().country())
